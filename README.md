@@ -1,3 +1,12 @@
+## Eerste Opdracht
+REQ-01 : "The CloudShirt .NET solution is high available across multiple AZ's using one url"\
+REQ-02 : "The CloudShirt .NET solution can scale out during spike traffic hours between 6pm and 8pm Eastern timezone"\
+REQ-03 : "Elastic File System (EFS) is used to store public webserver logfiles on a daily basis."\
+REQ-04 : "The data tier of the CloudShirt .NET solution is based on Amazon RDS."\
+REQ-05 : "As a monitoring solution the Elastic (ELK) Stack v8.x is provisioned."\
+REQ-06 : "Logs are made visible on Elastic Stack using FileBeat"\
+REQ-07 : "RDS snapshop data is backupped to an S3 bucket using a AWS-CLI script, so external Athena partner can analyse it."\
+
 ## Eisen Project
 1.1. provision a server and deploy a webapp using userdata\
 1.2. deploy a private subnet with NAT\
