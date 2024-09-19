@@ -5,7 +5,7 @@ REQ-03 : "Elastic File System (EFS) is used to store public webserver logfiles o
 REQ-04 : "The data tier of the CloudShirt .NET solution is based on Amazon RDS."\
 REQ-05 : "As a monitoring solution the Elastic (ELK) Stack v8.x is provisioned."\
 REQ-06 : "Logs are made visible on Elastic Stack using FileBeat"\
-REQ-07 : "RDS snapshop data is backupped to an S3 bucket using a AWS-CLI script, so external Athena partner can analyse it."\
+REQ-07 : "RDS snapshop data is backupped to an S3 bucket using a AWS-CLI script, so external Athena partner can analyse it."
 
 ## Eisen Project
 1.1. provision a server and deploy a webapp using userdata\
