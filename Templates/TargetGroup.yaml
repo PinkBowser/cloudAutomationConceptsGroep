@@ -16,4 +16,4 @@ Outputs:
     Description: "The ARN of the Target Group"
     Value: !Ref MyTargetGroup
     Export:
-      Name: !Sub "${AWS::StackName}-TargetGroupArn"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", TargetGroupArn ] ] # Fancy way of making the exported variable called "MyBase:Var"

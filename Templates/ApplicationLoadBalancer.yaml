@@ -19,10 +19,10 @@ Outputs:
     Description: "The DNS name of the Load Balancer"
     Value: !GetAtt MyLoadBalancer.DNSName
     Export:
-      Name: !Sub "${AWS::StackName}-LoadBalancerDNSName"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", LoadBalancerDNSName ] ] # Fancy way of making the exported variable called "MyBase:Var"
       
   LoadBalancerArn:
     Description: "The ARN of the Load Balancer"
     Value: !Ref MyLoadBalancer
     Export:
-      Name: !Sub "${AWS::StackName}-LoadBalancerArn"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", LoadBalancerArn ] ] # Fancy way of making the exported variable called "MyBase:Var"

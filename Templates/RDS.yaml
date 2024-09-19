@@ -17,10 +17,10 @@ Outputs:
     Description: "The connection endpoint for the RDS instance"
     Value: !GetAtt MyDBInstance.Endpoint.Address
     Export:
-      Name: !Sub "${AWS::StackName}-DBInstanceEndpoint"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", DBInstanceEndpoint ] ] # Fancy way of making the exported variable called "MyBase:Var"
       
   DBInstancePort:
     Description: "The port number of the RDS instance"
     Value: !GetAtt MyDBInstance.Endpoint.Port
     Export:
-      Name: !Sub "${AWS::StackName}-DBInstancePort"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", DBInstancePort ] ] # Fancy way of making the exported variable called "MyBase:Var"
