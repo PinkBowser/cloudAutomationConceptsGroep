@@ -37,44 +37,44 @@ Parameters:
 
 Resources:
   # We need a VPC.
-  MyFirstVPC:
+  CloudShirtVPC:
     Type: AWS::EC2::VPC
     Properties:
       CidrBlock: !Ref VPCCIDR
       EnableDnsHostnames: true
       Tags: # Good practice is to add tags!
         - Key: Name
-          Value: MyFirstVPC
+          Value: CloudShirtVPC
 
   # Define internet gateway to allow access to the "outside world"
-  MyFirstInternetGateway:
+  CloudShirtInternetGateway:
     Type: AWS::EC2::InternetGateway
     Properties:
       Tags:
         - Key: Name
-          Value: MyFirstInternetGateway
+          Value: CloudShirtInternetGateway
 
   # Connect internet gateway to VPC
-  MyFirstVPCGatewayAttachment:
+  CloudShirtVPCGatewayAttachment:
     Type: AWS::EC2::VPCGatewayAttachment
     Properties:
-      InternetGatewayId: !Ref MyFirstInternetGateway
-      VpcId: !Ref MyFirstVPC
+      InternetGatewayId: !Ref CloudShirtInternetGateway
+      VpcId: !Ref CloudShirtVPC
 
   # Define two (public) subnets on the /24 domain that automatically
   # assigns all instances a public ip on launch
-  MyFirstSubnet:
+  CloudShirtPublicSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: !Ref PublicSubnet1CIDR
       AvailabilityZone: !Ref AvailabilityZone1
       MapPublicIpOnLaunch: true
-      VpcId: !Ref MyFirstVPC
+      VpcId: !Ref CloudShirtVPC
       Tags:
         - Key: Name
-          Value: MyFirstSubnet
+          Value: CloudShirtPublicSubnet1
 
-  MySecondSubnet:
+  CloudShirtPublicSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: !Ref PublicSubnet2CIDR
@@ -83,95 +83,95 @@ Resources:
       VpcId: !Ref MyFirstVPC
       Tags:
         - Key: Name
-          Value: MySecondSubnet
+          Value: CloudShirtPublicSubnet2
 
   # Add a routing table (and route) to the VPC to route all traffic
   # via the internet gateway
-  MyFirstRouteTable:
+  CloudShirtRouteTable:
     Type: AWS::EC2::RouteTable
     Properties:
-      VpcId: !Ref MyFirstVPC
+      VpcId: !Ref CloudShirtVPC
       Tags:
         - Key: Name
-          Value: MyFirstRouteTable
+          Value: CloudShirtRouteTable
 
   # Default route to the internet gateway
-  MyFirstDefaultRoute:
+  CloudShirtDefaultRoute:
     Type: AWS::EC2::Route
     Properties:
       DestinationCidrBlock: 0.0.0.0/0
-      GatewayId: !Ref MyFirstInternetGateway
-      RouteTableId: !Ref MyFirstRouteTable
+      GatewayId: !Ref CloudShirtInternetGateway
+      RouteTableId: !Ref CloudShirtRouteTable
 
   # Associate routing table to subnets
-  MyFirstSubnetRouteTableAssociation:
+  CloudShirtSubnetRouteTableAssociation1:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      RouteTableId: !Ref MyFirstRouteTable
-      SubnetId: !Ref MyFirstSubnet
+      RouteTableId: !Ref CloudShirtRouteTable
+      SubnetId: !Ref CloudShirtPublicSubnet1
 
-  MySecondSubnetRouteTableAssociation:
+  CloudShirtSubnetRouteTableAssociation2:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
       RouteTableId: !Ref MyFirstRouteTable
-      SubnetId: !Ref MySecondSubnet
+      SubnetId: !Ref CloudShirtPublicSubnet2
 
   # Define two (private) subnets on the /24 domain
-  MyFirstPrivateSubnet:
+  CloudShirtPrivateSubnet1:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: !Ref PrivateSubnet1CIDR
       AvailabilityZone: !Ref AvailabilityZone1
-      VpcId: !Ref MyFirstVPC
+      VpcId: !Ref CloudShirtVPC
       Tags:
         - Key: Name
-          Value: MyFirstPrivateSubnet
+          Value: CloudShirtPrivateSubnet1
 
-  MySecondPrivateSubnet:
+  CloudShirtPrivateSubnet2:
     Type: AWS::EC2::Subnet
     Properties:
       CidrBlock: !Ref PrivateSubnet2CIDR
       AvailabilityZone: !Ref AvailabilityZone2
-      VpcId: !Ref MyFirstVPC
+      VpcId: !Ref CloudShirtVPC
       Tags:
         - Key: Name
-          Value: MySecondPrivateSubnet
+          Value: CloudShirtPrivateSubnet2
 
 # Define outputs so values can be imported in another template
 Outputs:
-  VPCRef:
+  CloudShirtVPCRef:
     Description: Reference to the VPC
-    Value: !Ref MyFirstVPC
+    Value: !Ref CloudShirtVPC
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", VPC ] ] # Fancy way of making the exported variable called "MyBase:VPC"
-  VPCGatewayAttachmentRef:
+  CloudShirtVPCGatewayAttachmentRef:
     Description: Reference to the VPC gateway attachment
-    Value: !Ref MyFirstVPCGatewayAttachment
+    Value: !Ref CloudShirtVPCGatewayAttachment
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", GatewayAttachment ] ]
-  MyFirstRouteTableRef:
+  CloudShirtRouteTableRef:
     Description: Reference to the VPC route table
-    Value: !Ref MyFirstRouteTable
+    Value: !Ref CloudShirtRouteTable
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", RouteTable ] ]
-  MyFirstSubnetRef:
+  CloudShirtPublicSubnet1Ref:
     Description: Reference to my first (public) subnet
-    Value: !Ref MyFirstSubnet
+    Value: !Ref CloudShirtPublicSubnet1
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", FirstSubnet ] ]
-  MySecondSubnetRef:
+  CloudShirtPublicSubnet2SubnetRef:
     Description: Reference to my second (public) subnet
-    Value: !Ref MySecondSubnet
+    Value: !Ref CloudShirtPublicSubnet2
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", SecondSubnet ] ]
-  MyFirstPrivateSubnetRef:
+  CloudShirtPrivateSubnet1Ref:
     Description: Reference to my first (private) subnet
-    Value: !Ref MyFirstPrivateSubnet
+    Value: !Ref CloudShirtPrivateSubnet1
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", FirstPrivateSubnet ] ]
-  MySecondPrivateSubnetRef:
+  CloudShirtPrivateSubnet2Ref:
     Description: Reference to my second (private) subnet
-    Value: !Ref MySecondPrivateSubnet
+    Value: !Ref CloudShirtPrivateSubnet2
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", SecondPrivateSubnet ] ]
   AvailabilityZone1Ref:
