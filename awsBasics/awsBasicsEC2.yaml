@@ -1,0 +1,79 @@
+Description: Template for EC2 instance with Cloudshirt
+Parameters:
+  Stackname:
+    Description: get default stackname
+    Type: String
+    Default: !Ref AWS::StackName
+  PublicSubnetEC2:
+    Description: input the chosen subnet reference
+    Type: String
+    Default: !Ref CloudShirtPublicSubnet1
+
+Resources:
+  CloudShirtEC2SecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Allow SSH and HTTP
+      VpcId: !ImportValue CloudShirtVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 22
+          ToPort: 22
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  CloudShirtEC2Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+        BlockDeviceMappings: 
+        - DeviceName: /dev/sda1 
+          Ebs:
+            DeleteOnTermination: true 
+            VolumeType: gp2 
+            VolumeSize: 10 
+            Encrypted: "true" 
+        InstanceType: t2.micro 
+        ImageId: ami-0e86e20dae9224db8 #Needs to be AMI 2023
+        KeyName: vockey 
+        SecurityGroupIds: 
+          - !Ref CloudShirtEC2SecurityGroup 
+        SubnetId: !ImportValue Stackname:PublicSubnetEC2 # Deploy the instance in the public subnet in AZ.
+        Tags:
+          - Key: Name
+            Value: cloudshirt-instance
+          - Key: Env
+            Value: Dev 
+        UserData: 
+          Fn::Base64: 
+            !Sub |
+              #!/bin/bash
+              apt-get update -y 
+              apt-get install nginx -y 
+              systemctl enable nginx 
+              systemctl start nginx 
+
+Outputs:
+  SecurityGroupId:
+    Description: "The ID of the security group"
+    Value: !Ref CloudShirtEC2SecurityGroup
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", SecurityGroupId ] ] # Fancy way of making the exported variable called "MyBase:Var"
+
+  EC2InstanceId:
+    Description: "The Instance ID of the EC2 instance"
+    Value: !Ref CloudShirtEC2Instance
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", EC2InstanceId ] ] # Fancy way of making the exported variable called "MyBase:Var"
+      
+  EC2PublicIP:
+    Description: "The public IP address of the EC2 instance"
+    Value: !GetAtt CloudShirtEC2Instance.PublicIp
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", EC2PublicIP ] ] # Fancy way of making the exported variable called "MyBase:Var"
