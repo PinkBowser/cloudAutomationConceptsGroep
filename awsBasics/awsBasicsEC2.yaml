@@ -1,21 +1,11 @@
 Description: Template for EC2 instance with Cloudshirt
-Parameters:
-  Stackname:
-    Description: get default stackname
-    Type: String
-    Default: CloudShirt
-
-  PublicSubnetEC2:
-    Description: input the chosen subnet reference
-    Type: String
-    Default: PublicSubnet1
 
 Resources:
   CloudShirtEC2SecurityGroup:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow SSH and HTTP
-      VpcId: !Ref Stackname:VPC
+      VpcId: !ImportValue CloudShirt:VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -45,7 +35,7 @@ Resources:
         KeyName: vockey 
         SecurityGroupIds: 
           - !Ref CloudShirtEC2SecurityGroup 
-        SubnetId: !Ref Stackname:PublicSubnetEC2 # Deploy the instance in the public subnet in AZ.
+        SubnetId: !ImportValue CloudShirt:PublicSubnet1 # Deploy the instance in the public subnet in AZ.
         Tags:
           - Key: Name
             Value: cloudshirt-instance
@@ -72,9 +62,3 @@ Outputs:
     Value: !Ref CloudShirtEC2Instance
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", EC2InstanceId ] ] # Fancy way of making the exported variable called "MyBase:Var"
-      
-  EC2PublicIP:
-    Description: "The public IP address of the EC2 instance"
-    Value: !GetAtt CloudShirtEC2Instance.PublicIp
-    Export:
-      Name: !Join [ ":", [ !Ref "AWS::StackName", EC2PublicIP ] ] # Fancy way of making the exported variable called "MyBase:Var"
