@@ -28,4 +28,4 @@ Outputs:
     Description: "The name of the Auto Scaling Group"
     Value: !Ref MyAutoScalingGroup
     Export:
-      Name: !Sub "${AWS::StackName}-AutoScalingGroupName"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", SecurityGroup ] ] # Fancy way of making the exported variable called "MyBase:Var"

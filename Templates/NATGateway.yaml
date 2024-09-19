@@ -16,10 +16,10 @@ Outputs:
     Description: "The ID of the NAT Gateway"
     Value: !Ref MyNATGateway
     Export:
-      Name: !Sub "${AWS::StackName}-NATGatewayId"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", NATGatewayId ] ] # Fancy way of making the exported variable called "MyBase:Var"
       
   NATGatewayEIP:
     Description: "The EIP associated with the NAT Gateway"
     Value: !Ref MyEIP
     Export:
-      Name: !Sub "${AWS::StackName}-NATGatewayEIP"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", NATGatewayEIP ] ] # Fancy way of making the exported variable called "MyBase:Var"

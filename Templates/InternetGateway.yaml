@@ -13,4 +13,4 @@ Outputs:
     Description: "The ID of the Internet Gateway"
     Value: !Ref MyInternetGateway
     Export:
-      Name: !Sub "${AWS::StackName}-InternetGatewayId"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", InternetGatewayId ] ] # Fancy way of making the exported variable called "MyBase:Var"

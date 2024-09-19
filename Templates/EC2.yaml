@@ -17,10 +17,10 @@ Outputs:
     Description: "The Instance ID of the EC2 instance"
     Value: !Ref MyEC2Instance
     Export:
-      Name: !Sub "${AWS::StackName}-EC2InstanceId"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", EC2InstanceId ] ] # Fancy way of making the exported variable called "MyBase:Var"
       
   EC2PublicIP:
     Description: "The public IP address of the EC2 instance"
     Value: !GetAtt MyEC2Instance.PublicIp
     Export:
-      Name: !Sub "${AWS::StackName}-EC2PublicIP"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", EC2PublicIP ] ] # Fancy way of making the exported variable called "MyBase:Var"

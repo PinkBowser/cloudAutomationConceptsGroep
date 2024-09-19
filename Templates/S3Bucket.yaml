@@ -11,10 +11,10 @@ Outputs:
     Description: "The name of the S3 bucket"
     Value: !Ref MyS3Bucket
     Export:
-      Name: !Sub "${AWS::StackName}-S3BucketName"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", S3BucketName ] ] # Fancy way of making the exported variable called "MyBase:Var"
       
   S3BucketArn:
     Description: "The ARN of the S3 bucket"
     Value: !GetAtt MyS3Bucket.Arn
     Export:
-      Name: !Sub "${AWS::StackName}-S3BucketArn"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", S3BucketArn ] ] # Fancy way of making the exported variable called "MyBase:Var"

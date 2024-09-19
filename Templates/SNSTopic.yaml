@@ -10,10 +10,10 @@ Outputs:
     Description: "The ARN of the SNS topic"
     Value: !Ref MySNSTopic
     Export:
-      Name: !Sub "${AWS::StackName}-SNSTopicArn"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", SNSTopicArn ] ] # Fancy way of making the exported variable called "MyBase:Var"
 
   SNSTopicName:
     Description: "The name of the SNS topic"
     Value: !GetAtt MySNSTopic.TopicName
     Export:
-      Name: !Sub "${AWS::StackName}-SNSTopicName"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", SNSTopicName ] ] # Fancy way of making the exported variable called "MyBase:Var"

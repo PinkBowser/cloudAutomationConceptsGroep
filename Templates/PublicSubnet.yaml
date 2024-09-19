@@ -14,4 +14,4 @@ Outputs:
     Description: "The ID of the subnet"
     Value: !Ref MySubnet
     Export:
-      Name: !Sub "${AWS::StackName}-SubnetId"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", SubnetId ] ] # Fancy way of making the exported variable called "MyBase:Var"

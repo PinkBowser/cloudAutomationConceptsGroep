@@ -14,10 +14,10 @@ Outputs:
     Description: "The ID of the VPC"
     Value: !Ref MyVPC
     Export:
-      Name: !Sub "${AWS::StackName}-VPCId"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", VPCId ] ] # Fancy way of making the exported variable called "MyBase:Var"
 
   VPCCidr:
     Description: "The CIDR block of the VPC"
     Value: !GetAtt MyVPC.CidrBlock
     Export:
-      Name: !Sub "${AWS::StackName}-VPCCidr"
+      Name: !Join [ ":", [ !Ref "AWS::StackName", VPCCidr ] ] # Fancy way of making the exported variable called "MyBase:Var"
