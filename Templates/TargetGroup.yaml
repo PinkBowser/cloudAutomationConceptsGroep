@@ -1,0 +1,19 @@
+Resources:
+  MyTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: MyTargetGroup
+      VpcId: !Ref MyVPC
+      Protocol: HTTP
+      Port: 80
+      HealthCheckProtocol: HTTP
+      HealthCheckPort: "80"
+      HealthCheckPath: /
+      TargetType: instance
+
+Outputs:
+  TargetGroupArn:
+    Description: "The ARN of the Target Group"
+    Value: !Ref MyTargetGroup
+    Export:
+      Name: !Sub "${AWS::StackName}-TargetGroupArn"

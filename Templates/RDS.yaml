@@ -1,0 +1,26 @@
+Resources:
+  MyDBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties:
+      DBInstanceClass: db.t3.micro
+      Engine: mysql
+      MasterUsername: admin
+      MasterUserPassword: password123
+      DBName: mydatabase
+      AllocatedStorage: 20
+      VPCSecurityGroups:
+        - !Ref MyDBSecurityGroup
+      DBSubnetGroupName: !Ref MyDBSubnetGroup
+
+Outputs:
+  DBInstanceEndpoint:
+    Description: "The connection endpoint for the RDS instance"
+    Value: !GetAtt MyDBInstance.Endpoint.Address
+    Export:
+      Name: !Sub "${AWS::StackName}-DBInstanceEndpoint"
+      
+  DBInstancePort:
+    Description: "The port number of the RDS instance"
+    Value: !GetAtt MyDBInstance.Endpoint.Port
+    Export:
+      Name: !Sub "${AWS::StackName}-DBInstancePort"

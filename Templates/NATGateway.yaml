@@ -1,0 +1,25 @@
+Resources:
+  MyEIP:
+    Type: AWS::EC2::EIP
+    Properties:
+      Domain: vpc
+
+  MyNATGateway:
+    Type: AWS::EC2::NatGateway
+    Properties:
+      AllocationId: !GetAtt MyEIP.AllocationId
+      SubnetId: !Ref MySubnet
+      ConnectivityType: public
+
+Outputs:
+  NATGatewayId:
+    Description: "The ID of the NAT Gateway"
+    Value: !Ref MyNATGateway
+    Export:
+      Name: !Sub "${AWS::StackName}-NATGatewayId"
+      
+  NATGatewayEIP:
+    Description: "The EIP associated with the NAT Gateway"
+    Value: !Ref MyEIP
+    Export:
+      Name: !Sub "${AWS::StackName}-NATGatewayEIP"

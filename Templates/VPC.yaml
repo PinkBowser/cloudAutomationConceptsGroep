@@ -1,0 +1,23 @@
+Resources:
+  MyVPC:
+    Type: AWS::EC2::VPC
+    Properties:
+      CidrBlock: 10.0.0.0/16
+      EnableDnsSupport: true
+      EnableDnsHostnames: true
+      Tags:
+        - Key: Name
+          Value: MyVPC
+
+Outputs:
+  VPCId:
+    Description: "The ID of the VPC"
+    Value: !Ref MyVPC
+    Export:
+      Name: !Sub "${AWS::StackName}-VPCId"
+
+  VPCCidr:
+    Description: "The CIDR block of the VPC"
+    Value: !GetAtt MyVPC.CidrBlock
+    Export:
+      Name: !Sub "${AWS::StackName}-VPCCidr"

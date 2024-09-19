@@ -1,0 +1,28 @@
+Resources:
+  MyLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: MyApplicationLoadBalancer
+      Subnets:
+        - !Ref MySubnet
+        - !Ref MyPrivateSubnet
+      SecurityGroups:
+        - !Ref MySecurityGroup
+      Scheme: internet-facing
+      LoadBalancerAttributes:
+        - Key: idle_timeout.timeout_seconds
+          Value: '60'
+      Type: application
+
+Outputs:
+  LoadBalancerDNSName:
+    Description: "The DNS name of the Load Balancer"
+    Value: !GetAtt MyLoadBalancer.DNSName
+    Export:
+      Name: !Sub "${AWS::StackName}-LoadBalancerDNSName"
+      
+  LoadBalancerArn:
+    Description: "The ARN of the Load Balancer"
+    Value: !Ref MyLoadBalancer
+    Export:
+      Name: !Sub "${AWS::StackName}-LoadBalancerArn"

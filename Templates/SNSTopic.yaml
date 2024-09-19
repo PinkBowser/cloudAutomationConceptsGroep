@@ -1,0 +1,19 @@
+Resources:
+  MySNSTopic:
+    Type: AWS::SNS::Topic
+    Properties:
+      DisplayName: MyTopic
+      TopicName: MySNSTopic
+
+Outputs:
+  SNSTopicArn:
+    Description: "The ARN of the SNS topic"
+    Value: !Ref MySNSTopic
+    Export:
+      Name: !Sub "${AWS::StackName}-SNSTopicArn"
+
+  SNSTopicName:
+    Description: "The name of the SNS topic"
+    Value: !GetAtt MySNSTopic.TopicName
+    Export:
+      Name: !Sub "${AWS::StackName}-SNSTopicName"

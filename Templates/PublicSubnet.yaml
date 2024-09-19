@@ -1,0 +1,17 @@
+Resources:
+  MySubnet:
+    Type: AWS::EC2::Subnet
+    Properties:
+      VpcId: !Ref MyVPC
+      CidrBlock: 10.0.1.0/24
+      MapPublicIpOnLaunch: true
+      Tags:
+        - Key: Name
+          Value: MyPublicSubnet
+
+Outputs:
+  SubnetId:
+    Description: "The ID of the subnet"
+    Value: !Ref MySubnet
+    Export:
+      Name: !Sub "${AWS::StackName}-SubnetId"

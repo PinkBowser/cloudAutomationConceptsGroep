@@ -1,0 +1,16 @@
+Resources:
+  MyInternetGateway:
+    Type: AWS::EC2::InternetGateway
+
+  AttachInternetGateway:
+    Type: AWS::EC2::VPCGatewayAttachment
+    Properties:
+      VpcId: !Ref MyVPC
+      InternetGatewayId: !Ref MyInternetGateway
+
+Outputs:
+  InternetGatewayId:
+    Description: "The ID of the Internet Gateway"
+    Value: !Ref MyInternetGateway
+    Export:
+      Name: !Sub "${AWS::StackName}-InternetGatewayId"
