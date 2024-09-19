@@ -7,7 +7,7 @@ Parameters:
   PublicSubnetEC2:
     Description: input the chosen subnet reference
     Type: String
-    Default: !Ref CloudShirtPublicSubnet1
+    Default: PublicSubnet1
 
 Resources:
   CloudShirtEC2SecurityGroup:
