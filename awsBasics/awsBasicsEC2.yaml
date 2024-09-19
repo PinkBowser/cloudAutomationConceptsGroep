@@ -40,7 +40,7 @@ Resources:
             VolumeSize: 10 
             Encrypted: "true" 
         InstanceType: t2.micro 
-        ImageId: ami-0e86e20dae9224db8 #Needs to be AMI 2023
+        ImageId: ami-0ebfd941bbafe70c6 #Needs to be AMI 2023
         KeyName: vockey 
         SecurityGroupIds: 
           - !Ref CloudShirtEC2SecurityGroup 
