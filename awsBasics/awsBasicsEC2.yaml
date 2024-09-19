@@ -14,7 +14,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow SSH and HTTP
-      VpcId: !ImportValue CloudShirtVPC
+      VpcId: !ImportValue Stackname:VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22

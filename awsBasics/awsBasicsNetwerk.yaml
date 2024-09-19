@@ -1,4 +1,4 @@
-Description: An empty VPC (10.0.0.0/16) with one (public) subnet (/24) with internet gateway and routing table that allows full interaction between subnet and outside world.
+Description: An VPC (10.0.0.0/16) with internet gateway and routing table that allows full interaction between subnet and outside world.
 Parameters:
   VPCCIDR:
     Description: Please enter the IP range (CIDR notation) for this VPC.
@@ -158,22 +158,22 @@ Outputs:
     Description: Reference to my first (public) subnet
     Value: !Ref CloudShirtPublicSubnet1
     Export:
-      Name: !Join [ ":", [ !Ref "AWS::StackName", FirstSubnet ] ]
+      Name: !Join [ ":", [ !Ref "AWS::StackName", PublicSubnet1 ] ]
   CloudShirtPublicSubnet2SubnetRef:
     Description: Reference to my second (public) subnet
     Value: !Ref CloudShirtPublicSubnet2
     Export:
-      Name: !Join [ ":", [ !Ref "AWS::StackName", SecondSubnet ] ]
+      Name: !Join [ ":", [ !Ref "AWS::StackName", PublicSubnet2 ] ]
   CloudShirtPrivateSubnet1Ref:
     Description: Reference to my first (private) subnet
     Value: !Ref CloudShirtPrivateSubnet1
     Export:
-      Name: !Join [ ":", [ !Ref "AWS::StackName", FirstPrivateSubnet ] ]
+      Name: !Join [ ":", [ !Ref "AWS::StackName", PrivateSubnet1 ] ]
   CloudShirtPrivateSubnet2Ref:
     Description: Reference to my second (private) subnet
     Value: !Ref CloudShirtPrivateSubnet2
     Export:
-      Name: !Join [ ":", [ !Ref "AWS::StackName", SecondPrivateSubnet ] ]
+      Name: !Join [ ":", [ !Ref "AWS::StackName", PrivateSubnet2 ] ]
   AvailabilityZone1Ref:
     Description: Reference to Availability Zone 1
     Value: !Ref AvailabilityZone1
