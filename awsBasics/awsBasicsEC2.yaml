@@ -24,7 +24,7 @@ Resources:
     Type: AWS::EC2::Instance
     Properties:
         BlockDeviceMappings: 
-        - DeviceName: /dev/sda1 
+        - DeviceName: /dev/xvda
           Ebs:
             DeleteOnTermination: true 
             VolumeType: gp3
@@ -39,8 +39,6 @@ Resources:
         Tags:
           - Key: Name
             Value: cloudshirt-instance
-          - Key: Env
-            Value: Dev
 
 Outputs:
   SecurityGroupId:
