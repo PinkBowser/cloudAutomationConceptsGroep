@@ -80,7 +80,7 @@ Resources:
       CidrBlock: !Ref PublicSubnet2CIDR
       AvailabilityZone: !Ref AvailabilityZone2
       MapPublicIpOnLaunch: true
-      VpcId: !Ref MyFirstVPC
+      VpcId: !Ref CloudShirtVPC
       Tags:
         - Key: Name
           Value: CloudShirtPublicSubnet2
@@ -113,7 +113,7 @@ Resources:
   CloudShirtSubnetRouteTableAssociation2:
     Type: AWS::EC2::SubnetRouteTableAssociation
     Properties:
-      RouteTableId: !Ref MyFirstRouteTable
+      RouteTableId: !Ref CloudShirtRouteTable
       SubnetId: !Ref CloudShirtPublicSubnet2
 
   # Define two (private) subnets on the /24 domain
