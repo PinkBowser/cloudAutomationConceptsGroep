@@ -3,7 +3,7 @@ Parameters:
   Stackname:
     Description: get default stackname
     Type: String
-    Default: !Ref AWS::StackName
+    Default: CloudShirt
   PublicSubnetEC2:
     Description: input the chosen subnet reference
     Type: String
