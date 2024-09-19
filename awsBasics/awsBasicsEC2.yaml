@@ -45,10 +45,7 @@ Resources:
           Fn::Base64: 
             !Sub |
               #!/bin/bash
-              sudo dnf update -y 
-              sudo dnf install nginx -y 
-              systemctl enable nginx 
-              systemctl start nginx 
+              dnf update -y 
 
 Outputs:
   SecurityGroupId:
