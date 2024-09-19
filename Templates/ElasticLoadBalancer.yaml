@@ -1,0 +1,55 @@
+Resources:
+  # Security Group for the ELB
+  ELBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Security group for ELB allowing HTTP and HTTPS traffic
+      VpcId: !Ref MyVPC
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 80
+          ToPort: 80
+          CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 443
+          ToPort: 443
+          CidrIp: 0.0.0.0/0
+
+  # Elastic Load Balancer
+  MyElasticLoadBalancer:
+    Type: AWS::ElasticLoadBalancing::LoadBalancer
+    Properties:
+      LoadBalancerName: MyClassicELB
+      Subnets:
+        - !Ref PublicSubnet1
+        - !Ref PublicSubnet2
+      SecurityGroups:
+        - !Ref ELBSecurityGroup
+      Listeners:
+        - LoadBalancerPort: 80
+          InstancePort: 80
+          Protocol: HTTP
+        - LoadBalancerPort: 443
+          InstancePort: 443
+          Protocol: HTTPS
+          SSLCertificateId: !Ref MySSLCertificateArn  # SSL Cert ARN for HTTPS
+      HealthCheck:
+        Target: HTTP:80/
+        HealthyThreshold: 3
+        UnhealthyThreshold: 5
+        Interval: 30
+        Timeout: 5
+      CrossZone: true
+
+Outputs:
+  ELBDNSName:
+    Description: "The DNS name of the Elastic Load Balancer"
+    Value: !GetAtt MyElasticLoadBalancer.DNSName
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", ELBDNSName ] ] # Fancy way of making the exported variable called "MyBase:Var"
+
+  ELBName:
+    Description: "The name of the Elastic Load Balancer"
+    Value: !Ref MyElasticLoadBalancer
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", ELBName ] ] # Fancy way of making the exported variable called "MyBase:Var"
