@@ -4,6 +4,7 @@ Parameters:
     Description: get default stackname
     Type: String
     Default: CloudShirt
+
   PublicSubnetEC2:
     Description: input the chosen subnet reference
     Type: String
@@ -14,7 +15,7 @@ Resources:
     Type: AWS::EC2::SecurityGroup
     Properties:
       GroupDescription: Allow SSH and HTTP
-      VpcId: !ImportValue Stackname:VPC
+      VpcId: !Ref Stackname:VPC
       SecurityGroupIngress:
         - IpProtocol: tcp
           FromPort: 22
@@ -44,7 +45,7 @@ Resources:
         KeyName: vockey 
         SecurityGroupIds: 
           - !Ref CloudShirtEC2SecurityGroup 
-        SubnetId: !ImportValue Stackname:PublicSubnetEC2 # Deploy the instance in the public subnet in AZ.
+        SubnetId: !Ref Stackname:PublicSubnetEC2 # Deploy the instance in the public subnet in AZ.
         Tags:
           - Key: Name
             Value: cloudshirt-instance
