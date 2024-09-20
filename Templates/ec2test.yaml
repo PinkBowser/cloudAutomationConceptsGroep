@@ -27,8 +27,8 @@ Resources:
               sudo yum -y update
               sudo yum upgrade -y
               sudo yum install -y nginx
-              systemctl enable nginx 
-              systemctl start nginx 
+              sudo systemctl enable nginx 
+              sudo systemctl start nginx 
 
 Outputs:
   EC2InstanceId:
