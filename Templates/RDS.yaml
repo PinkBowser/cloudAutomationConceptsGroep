@@ -2,12 +2,12 @@ Resources:
   MyDBInstance:
     Type: AWS::RDS::DBInstance
     Properties:
-      DBInstanceClass: db.t3.micro
+      DBInstanceClass: db.t3.small
       Engine: mysql
       MasterUsername: admin
       MasterUserPassword: password123
       DBName: mydatabase
-      AllocatedStorage: 20
+      AllocatedStorage: 200
       VPCSecurityGroups:
         - !Ref MyDBSecurityGroup
       DBSubnetGroupName: !Ref MyDBSubnetGroup
