@@ -32,6 +32,10 @@ Resources:
               sudo dnf update dotnet6.0 --releasever 2023.1.20230719
               sudo cd /root
               git clone https://github.com/looking4ward/CloudShirt.git
+              sudo cd CloudShirt/src/Web
+              sudo dotnet publish -c Release -o ../../../release
+              sudo cd ../../../release
+              sudo dotnet Web.dlle
 
 Outputs:
   EC2InstanceId:
