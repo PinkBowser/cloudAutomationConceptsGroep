@@ -155,52 +155,81 @@ Resources:
           FromPort: 443
           ToPort: 443
           CidrIp: 0.0.0.0/0
-  
-  ## NAT GATEWAY
-  NatGateway:
-    Type: AWS::EC2::NatGateway
-    DependsOn: NatPublicIP
-    Properties: 
-      SubnetId: !Ref CloudShirtPublicSubnet1
-      AllocationId: !GetAtt NatPublicIP.AllocationId
       Tags:
         - Key: Name
-          Value: CloudShirtNat
+          Value: CloudShirtEC2SecurityGroup
 
-  ## ELASTIC IP
-  NatPublicIP:
-    Type: AWS::EC2::EIP
-    DependsOn: CloudShirtVPC
+  
+  ## NAT GATEWAY
+  CloudShirtEIP1:
+    Type: 'AWS::EC2::EIP'
     Properties:
       Domain: vpc
-     
-  ## PRIVATE ROUTING
-  PrivateRouteTable:
-    Type: AWS::EC2::RouteTable
+
+  CloudShirtNATGateway1:
+    Type: 'AWS::EC2::NatGateway'
+    Properties:
+      SubnetId: !Ref CloudShirtPublicSubnet1
+      AllocationId: !GetAtt CloudShirtEIP1.AllocationId
+      Tags:
+        - Key: Name
+          Value: CloudShirtNATGateway1
+  
+  CloudShirtEIP2:
+    Type: 'AWS::EC2::EIP'
+    Properties:
+      Domain: vpc
+
+  CloudShirtNATGateway2:
+    Type: 'AWS::EC2::NatGateway'
+    Properties:
+      SubnetId: !Ref CloudShirtPublicSubnet2
+      AllocationId: !GetAtt CloudShirtEIP2.AllocationId
+      Tags:
+        - Key: Name
+          Value: CloudShirtNATGateway2
+
+  CloudShirtPrivateRouteTable1:
+    Type: 'AWS::EC2::RouteTable'
     Properties:
       VpcId: !Ref CloudShirtVPC
       Tags:
         - Key: Name
-          Value: CloudShirtPrivateRouteTable
-    
-  PrivateRoute:
-    Type: AWS::EC2::Route
+          Value: CloudShirtPrivateRouteTable1
+
+  CloudShirtPrivateRouteTable2:
+    Type: 'AWS::EC2::RouteTable'
     Properties:
-      NatGatewayId: !Ref NatGateway
-      RouteTableId: !Ref PrivateRouteTable
+      VpcId: !Ref CloudShirtVPC
+      Tags:
+        - Key: Name
+          Value: CloudShirtPrivateRouteTable2
+
+  CloudShirtPrivateRoute1:
+    Type: 'AWS::EC2::Route'
+    Properties:
+      RouteTableId: !Ref CloudShirtPrivateRouteTable1
       DestinationCidrBlock: 0.0.0.0/0
-     
-  PrivateSubnet1RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
+      NatGatewayId: !Ref CloudShirtNATGateway1
+
+  CloudShirtPrivateRoute2:
+    Type: 'AWS::EC2::Route'
+    Properties:
+      RouteTableId: !Ref CloudShirtPrivateRouteTable2
+      DestinationCidrBlock: 0.0.0.0/0
+      NatGatewayId: !Ref CloudShirtNATGateway2
+
+  CloudShirtPrivateSubnet1RouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
       SubnetId: !Ref CloudShirtPrivateSubnet1
-      RouteTableId: !Ref PrivateRouteTable
-   
-  PrivateSubnet2RouteTableAssociation:
-    Type: AWS::EC2::SubnetRouteTableAssociation
+      RouteTableId: !Ref CloudShirtPrivateRouteTable1
+
+  CloudShirtPrivateSubnet2RouteTableAssociation:
+    Type: 'AWS::EC2::SubnetRouteTableAssociation'
     Properties:
       SubnetId: !Ref CloudShirtPrivateSubnet2
-      RouteTableId: !Ref PrivateRouteTable
+      RouteTableId: !Ref CloudShirtPrivateRouteTable2
 
 # Define outputs so values can be imported in another template
 Outputs:
