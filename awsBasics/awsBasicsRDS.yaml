@@ -3,19 +3,27 @@ Resources:
     Type: AWS::RDS::DBInstance
     Properties: 
       DBInstanceClass: db.t3.small
-      Engine: sqlserver-ex # Microsoft SQL Server Express Edition
+      Engine: sqlserver-ex # Microsoft SQL Server Express Edition sqlserver-ex
       LicenseModel: license-included
-      DBName: CloudShirtDatabase
+      DBName: ""
       MasterUsername: admin
       MasterUserPassword: CloudShirt123
-      AllocatedStorage: 200  # Aantal GB, dit kan worden aangepast afhankelijk van je behoeften
+      AllocatedStorage: 100  # Aantal GB, dit kan worden aangepast afhankelijk van je behoeften
       StorageType: gp3
       MultiAZ: false  # Zet op true voor hoge beschikbaarheid
       MonitoringInterval: 0  # Monitoring uitgeschakeld
       PubliclyAccessible: false  # Database niet publiek toegankelijk maken
       VPCSecurityGroups:
         - !Ref CloudShirtDBSecurityGroup
-      DBSubnetGroupName: !ImportValue CloudShirt:PrivateSubnet1
+      DBSubnetGroupName: !Ref CloudShirtDBSubnetGroup
+
+  CloudShirtDBSubnetGroup: 
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription: Security Group Voor de DB
+      SubnetIds: 
+        - !ImportValue CloudShirt:PrivateSubnet1
+        - !ImportValue CloudShirt:PrivateSubnet2
 
   CloudShirtDBSecurityGroup:
     Type: AWS::EC2::SecurityGroup
@@ -31,7 +39,7 @@ Resources:
 Outputs:
   DBEndpoint:
     Description: "RDS DB Endpoint"
-    Value: !GetAtt MyDBInstance.Endpoint.Address
+    Value: !GetAtt CloudShirtDBInstance.Endpoint.Address
   DBPort:
     Description: "RDS DB Port"
-    Value: !GetAtt MyDBInstance.Endpoint.Port
+    Value: !GetAtt CloudShirtDBInstance.Endpoint.Port
