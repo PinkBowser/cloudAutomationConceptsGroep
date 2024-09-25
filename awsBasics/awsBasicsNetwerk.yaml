@@ -155,6 +155,10 @@ Resources:
           FromPort: 443
           ToPort: 443
           CidrIp: 0.0.0.0/0
+        - IpProtocol: tcp
+          FromPort: 5000
+          ToPort: 5000
+          CidrIp: 0.0.0.0/0
       Tags:
         - Key: Name
           Value: CloudShirtEC2SecurityGroup
