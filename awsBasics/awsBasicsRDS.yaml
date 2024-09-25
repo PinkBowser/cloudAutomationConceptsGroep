@@ -9,7 +9,7 @@ Resources:
       MasterUsername: admin
       MasterUserPassword: CloudShirt123
       AllocatedStorage: 100  # Aantal GB, dit kan worden aangepast afhankelijk van je behoeften
-      StorageType: gp3
+      StorageType: gp2
       MultiAZ: false  # Zet op true voor hoge beschikbaarheid
       MonitoringInterval: 0  # Monitoring uitgeschakeld
       PubliclyAccessible: false  # Database niet publiek toegankelijk maken
