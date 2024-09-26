@@ -50,3 +50,37 @@ Resources:
       MaxSize: '10' 
       Recurrence: "0 0 * * *" # UTC-4 (for 8 PM Eastern Time)
   
+  CloudShirtLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: CloudShirt
+      Subnets:
+        - !ImportValue CloudShirt:PublicSubnet1
+        - !ImportValue CloudShirt:PublicSubnet2  
+      SecurityGroups:
+        - !ImportValue CloudShirt:SecurityGroupId
+      Tags:
+        - Key: Name
+          Value: CloudShirtLB
+
+  CloudShirtLBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref CloudShirtLoadBalancer
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref CloudShirtTargetGroup
+
+  # We define a default target group here, as this is a mandatory Parameters
+  # when creating an Application Load Balancer Listener. This is not used, instead
+  # a target group is created per-service in each service template (../services/*)
+  CloudShirtTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: CloudShirtTargetGroup
+      VpcId: !ImportValue CloudShirt:VPC
+      Port: 80
+      Protocol: HTTP
+  
