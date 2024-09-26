@@ -1,4 +1,9 @@
 Description: Template for EC2 instance with Cloudshirt
+Parameters:
+  RDSENDPOINT:
+    Type: String
+    Description: The RDS endpoint for the database.
+    Default: !ImportValue CloudShirtDB:DBEndpoint
 
 Resources:
   CloudShirtEC2Instance:
@@ -39,6 +44,9 @@ Resources:
               # Clone de repository en bouw de applicatie
               cd /root
               sudo git clone https://github.com/looking4ward/CloudShirt.git
+              sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;UserID=csadmin;Password=cspasswd;InitialCatalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
+              sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;UserID=csadmin;Password=cspasswd;InitialCatalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
+
               cd CloudShirt/src/Web
 
               # Publiceer de dotnet applicatie
