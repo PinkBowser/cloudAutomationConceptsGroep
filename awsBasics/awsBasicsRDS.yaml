@@ -40,6 +40,10 @@ Outputs:
   DBEndpoint:
     Description: "RDS DB Endpoint"
     Value: !GetAtt CloudShirtDBInstance.Endpoint.Address
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", DBEndpoint ] ] # Fancy way of making the exported variable called "MyBase:Var"
   DBPort:
     Description: "RDS DB Port"
     Value: !GetAtt CloudShirtDBInstance.Endpoint.Port
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", DBPort ] ] # Fancy way of making the exported variable called "MyBase:Var"
