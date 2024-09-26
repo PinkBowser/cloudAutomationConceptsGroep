@@ -1,0 +1,52 @@
+Description: Template for EC2 instance with Cloudshirt
+
+Resources:
+  CloudShirtLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: CloudShirtLaunchTemplate
+      LaunchTemplateData:
+        BlockDeviceMappings:
+          - DeviceName: /dev/xvda
+            Ebs:
+              DeleteOnTermination: true
+              VolumeType: gp3
+              VolumeSize: 30
+              Encrypted: "true"
+        InstanceType: t2.micro
+        ImageId: ami-0ebfd941bbafe70c6
+        KeyName: vockey
+        SecurityGroupIds:
+          - !ImportValue CloudShirt:SecurityGroupId
+  
+  CloudShirtASG:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref CloudShirtLaunchTemplate
+        Version: !GetAtt CloudShirtLaunchTemplate.LatestVersionNumber
+      DesiredCapacity: '2'
+      MaxSize: '10'
+      MinSize: '1'
+      VPCZoneIdentifier: 
+        - !ImportValue CloudShirt:PublicSubnet1
+        - !ImportValue CloudShirt:PublicSubnet2
+  
+  CloudShirtASGUp: # Deze schaalt hem omhoog
+    Type: "AWS::AutoScaling::ScheduledAction"
+    Properties: 
+      AutoScalingGroupName: !Ref CloudShirtASG
+      DesiredCapacity: '9' 
+      MinSize: '1' 
+      MaxSize: '10' 
+      Recurrence: "0 22 * * *" # UTC-4 (for 6 PM Eastern Time)
+  
+  CloudShirtASGDown: # Deze schaalt hem af
+    Type: "AWS::AutoScaling::ScheduledAction"
+    Properties:
+      AutoScalingGroupName: !Ref CloudShirtASG
+      DesiredCapacity: '2' 
+      MinSize: '1' 
+      MaxSize: '10' 
+      Recurrence: "0 0 * * *" # UTC-4 (for 8 PM Eastern Time)
+  
