@@ -39,8 +39,8 @@ Resources:
               # Clone de repository en bouw de applicatie
               cd /root
               sudo git clone https://github.com/looking4ward/CloudShirt.git
-              sed -i 's/Server.*CatalogDb;/Server=${!ImportValue CloudShirtDB:DBEndpoint},1433;UserID=csadmin;Password=cspasswd;InitialCatalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
-              sed -i 's/Server.*Identity;/Server=${!ImportValue CloudShirtDB:DBEndpoint},1433;UserID=csadmin;Password=cspasswd;InitialCatalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
+              sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;UserID=csadmin;Password=cspasswd;InitialCatalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
+              sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;UserID=csadmin;Password=cspasswd;InitialCatalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
 
               cd CloudShirt/src/Web
 
@@ -50,7 +50,6 @@ Resources:
               # Navigeer naar de release map en start de applicatie
               cd ../../../release
               sudo dotnet Web.dll
-
 
 Outputs:
   EC2InstanceId:
