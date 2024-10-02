@@ -49,7 +49,7 @@ Resources:
 
             # Navigeer naar de release map en start de applicatie
             cd ../../../release
-            sudo dotnet Web.dll
+            sudo dotnet run Web.dll
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint
 
