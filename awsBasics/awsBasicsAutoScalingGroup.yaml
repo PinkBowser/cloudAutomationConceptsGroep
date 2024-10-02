@@ -40,6 +40,8 @@ Resources:
       VPCZoneIdentifier: 
         - !ImportValue CloudShirt:PublicSubnet1
         - !ImportValue CloudShirt:PublicSubnet2
+      TargetGroupARNs:
+        - !Ref CloudShirtTargetGroup
   
   CloudShirtASGUp: # Deze schaalt hem omhoog
     Type: "AWS::AutoScaling::ScheduledAction"
