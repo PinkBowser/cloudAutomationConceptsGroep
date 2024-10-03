@@ -43,7 +43,6 @@ Resources:
             cd CloudShirt/src/Web
 
             # Publiceer de dotnet applicatie
-            dotnet restore
             dotnet publish -c Release -o ../../../release
             dotnet run --urls "http://0.0.0.0:5000"
 
