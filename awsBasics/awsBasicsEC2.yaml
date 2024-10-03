@@ -48,7 +48,7 @@ Resources:
             dotnet restore
             dotnet publish -c Release -o ../../../release
             cd ../../../release
-            dotnet Web.dll --urls "http://0.0.0.0:5000"
+            dotnet Web.dll --urls "http://0.0.0.0:80"
 
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint

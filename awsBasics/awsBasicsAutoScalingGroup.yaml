@@ -44,7 +44,7 @@ Resources:
 
             # Publiceer de dotnet applicatie
             sudo dotnet publish -c Release -o ../../../release
-            sudo dotnet run --urls "http://0.0.0.0:5000"
+            sudo dotnet run --urls "http://0.0.0.0:80"
 
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint
