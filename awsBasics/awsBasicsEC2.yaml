@@ -39,17 +39,17 @@ Resources:
             # Clone de repository en bouw de applicatie
             cd /root
             sudo git clone https://github.com/looking4ward/CloudShirt.git
-            sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;UserID=admin;Password=CloudShirt123;InitialCatalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
-            sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;UserID=admin;Password=CloudShirt123;InitialCatalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
+            sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
+            sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
 
             cd CloudShirt/src/Web
 
             # Publiceer de dotnet applicatie
-            sudo dotnet publish -c Release -o ../../../release
+            dotnet restore
+            dotnet publish -c Release -o ../../../release
 
-            # Navigeer naar de release map en start de applicatie
-            cd ../../../release
-            sudo dotnet run Web.dll
+            dotnet run --urls "http://0.0.0.0:5000"
+
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint
 
