@@ -25,16 +25,16 @@ Resources:
           - |
             #!/bin/bash
             # Update en installeer benodigde pakketten
-            sudo yum update -y
-            sudo yum upgrade -y
+            yum update -y
+            yum upgrade -y
 
             # Installeer git en .NET 6.0 runtime en SDK
-            sudo yum install -y git
-            sudo yum install -y aspnetcore-runtime-6.0
-            sudo yum install -y dotnet-sdk-6.0
+            yum install -y git
+            yum install -y aspnetcore-runtime-6.0
+            yum install -y dotnet-sdk-6.0
 
             # Update specifieke dotnet versie met dnf
-            sudo dnf update dotnet6.0 --releasever=2023.1.20230719 -y
+            dnf update dotnet6.0 --releasever=2023.1.20230719 -y
 
             # Clone de repository en bouw de applicatie
             cd /root
