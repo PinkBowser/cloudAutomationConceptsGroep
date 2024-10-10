@@ -1,0 +1,114 @@
+Description: Template for EC2 instance with Cloudshirt
+
+Resources:
+  CloudShirtLaunchTemplate:
+    Type: AWS::EC2::LaunchTemplate
+    Properties:
+      LaunchTemplateName: CloudShirtLaunchTemplate
+      LaunchTemplateData:
+        BlockDeviceMappings:
+          - DeviceName: /dev/xvda
+            Ebs:
+              DeleteOnTermination: true
+              VolumeType: gp3
+              VolumeSize: 30
+              Encrypted: "true"
+        InstanceType: t2.micro
+        ImageId: ami-0ebfd941bbafe70c6
+        KeyName: vockey
+        SecurityGroupIds:
+          - !ImportValue CloudShirt:SecurityGroupId
+        UserData:
+          Fn::Base64: !Sub 
+          - |
+            #!/bin/bash
+            # Update en installeer benodigde pakketten
+            yum update -y
+            yum upgrade -y
+
+            # Installeer git en .NET 6.0 runtime en SDK
+            yum install -y git
+            yum install -y aspnetcore-runtime-6.0
+            yum install -y dotnet-sdk-6.0
+
+            # Update specifieke dotnet versie met dnf
+            dnf update dotnet6.0 --releasever=2023.1.20230719 -y
+
+            # Clone de repository en bouw de applicatie
+            cd /root
+            sudo git clone https://github.com/looking4ward/CloudShirt.git
+            sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
+            sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
+
+            cd CloudShirt/src/Web
+
+            # Publiceer de dotnet applicatie
+            sudo dotnet publish -c Release -o ../../../release
+            sudo dotnet run --urls "http://0.0.0.0:80"
+
+          - RDSENDPOINT:
+              Fn::ImportValue: CloudShirtDB:DBEndpoint
+  
+  CloudShirtASG:
+    Type: AWS::AutoScaling::AutoScalingGroup
+    Properties:
+      LaunchTemplate:
+        LaunchTemplateId: !Ref CloudShirtLaunchTemplate
+        Version: !GetAtt CloudShirtLaunchTemplate.LatestVersionNumber
+      DesiredCapacity: '2'
+      MaxSize: '10'
+      MinSize: '1'
+      VPCZoneIdentifier: 
+        - !ImportValue CloudShirt:PublicSubnet1
+        - !ImportValue CloudShirt:PublicSubnet2
+      TargetGroupARNs:
+        - !Ref CloudShirtTargetGroup
+  
+  CloudShirtASGUp: # Deze schaalt hem omhoog
+    Type: "AWS::AutoScaling::ScheduledAction"
+    Properties: 
+      AutoScalingGroupName: !Ref CloudShirtASG
+      DesiredCapacity: '9' 
+      MinSize: '1' 
+      MaxSize: '10' 
+      Recurrence: "0 22 * * *" # UTC-4 (for 6 PM Eastern Time)
+  
+  CloudShirtASGDown: # Deze schaalt hem af
+    Type: "AWS::AutoScaling::ScheduledAction"
+    Properties:
+      AutoScalingGroupName: !Ref CloudShirtASG
+      DesiredCapacity: '2' 
+      MinSize: '1' 
+      MaxSize: '10' 
+      Recurrence: "0 0 * * *" # UTC-4 (for 8 PM Eastern Time)
+  
+  CloudShirtLoadBalancer:
+    Type: AWS::ElasticLoadBalancingV2::LoadBalancer
+    Properties:
+      Name: CloudShirt
+      Subnets:
+        - !ImportValue CloudShirt:PublicSubnet1
+        - !ImportValue CloudShirt:PublicSubnet2
+      SecurityGroups:
+        - !ImportValue CloudShirt:SecurityGroupId
+      Tags:
+        - Key: Name
+          Value: CloudShirtLB
+
+  CloudShirtLBListener:
+    Type: AWS::ElasticLoadBalancingV2::Listener
+    Properties:
+      LoadBalancerArn: !Ref CloudShirtLoadBalancer
+      Port: 80
+      Protocol: HTTP
+      DefaultActions:
+        - Type: forward
+          TargetGroupArn: !Ref CloudShirtTargetGroup
+
+  CloudShirtTargetGroup:
+    Type: AWS::ElasticLoadBalancingV2::TargetGroup
+    Properties:
+      Name: CloudShirtTargetGroup
+      VpcId: !ImportValue CloudShirt:VPC
+      Port: 80
+      Protocol: HTTP

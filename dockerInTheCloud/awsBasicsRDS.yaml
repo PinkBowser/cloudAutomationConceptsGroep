@@ -1,0 +1,49 @@
+Resources:
+  CloudShirtDBInstance:
+    Type: AWS::RDS::DBInstance
+    Properties: 
+      DBInstanceClass: db.t3.small
+      Engine: sqlserver-ex # Microsoft SQL Server Express Edition sqlserver-ex
+      LicenseModel: license-included
+      DBName: ""
+      MasterUsername: admin
+      MasterUserPassword: CloudShirt123
+      AllocatedStorage: 100  # Aantal GB, dit kan worden aangepast afhankelijk van je behoeften
+      StorageType: gp2
+      MultiAZ: false  # Zet op true voor hoge beschikbaarheid
+      MonitoringInterval: 0  # Monitoring uitgeschakeld
+      PubliclyAccessible: false  # Database niet publiek toegankelijk maken
+      VPCSecurityGroups:
+        - !Ref CloudShirtDBSecurityGroup
+      DBSubnetGroupName: !Ref CloudShirtDBSubnetGroup
+
+  CloudShirtDBSubnetGroup: 
+    Type: AWS::RDS::DBSubnetGroup
+    Properties: 
+      DBSubnetGroupDescription: Security Group Voor de DB
+      SubnetIds: 
+        - !ImportValue CloudShirt:PrivateSubnet1
+        - !ImportValue CloudShirt:PrivateSubnet2
+
+  CloudShirtDBSecurityGroup:
+    Type: AWS::EC2::SecurityGroup
+    Properties:
+      GroupDescription: Enable access to RDS instance
+      VpcId: !ImportValue CloudShirt:VPC  # Vul de VPC-ID in waar je DB wordt gemaakt
+      SecurityGroupIngress:
+        - IpProtocol: tcp
+          FromPort: 1433  # MS SQL standaardpoort
+          ToPort: 1433
+          CidrIp: 0.0.0.0/0  # Open toegang voor iedereen, pas dit aan afhankelijk van je beveiligingsbeleid
+
+Outputs:
+  DBEndpoint:
+    Description: "RDS DB Endpoint"
+    Value: !GetAtt CloudShirtDBInstance.Endpoint.Address
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", DBEndpoint ] ] # Fancy way of making the exported variable called "MyBase:Var"
+  DBPort:
+    Description: "RDS DB Port"
+    Value: !GetAtt CloudShirtDBInstance.Endpoint.Port
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", DBPort ] ] # Fancy way of making the exported variable called "MyBase:Var"
