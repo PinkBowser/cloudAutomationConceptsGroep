@@ -19,9 +19,8 @@ Resources:
         SecurityGroupIds:
           - !ImportValue CloudShirt:SecurityGroupId
         UserData: 
-          Fn::Base64: !Sub
-            #!/bin/bash
-            # Update en installeer benodigde pakketten
+          Fn::Base64: 
+            !Sub |
             yum update -y
             yum upgrade -y
             yum install -y docker
