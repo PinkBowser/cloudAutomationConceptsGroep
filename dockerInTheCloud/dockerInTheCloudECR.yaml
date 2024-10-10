@@ -1,0 +1,12 @@
+Description: CloudFormation template to create an ECR repository.
+
+Resources:
+  MyECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      EmptyOnDelete: true
+
+Outputs:
+  ECRRepositoryURI:
+    Description: URI of the created ECR repository
+    Value: !GetAtt MyECRRepository.RepositoryUri
