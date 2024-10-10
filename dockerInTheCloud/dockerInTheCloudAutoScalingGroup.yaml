@@ -19,14 +19,18 @@ Resources:
         SecurityGroupIds:
           - !ImportValue CloudShirt:SecurityGroupId
         UserData: 
-          Fn::Base64:
+          Fn::Base64: !Sub
             #!/bin/bash
             # Update en installeer benodigde pakketten
             yum update -y
             yum upgrade -y
             yum install -y docker
+
             sudo service docker start
             sudo systemctl enable docker
+            
+            sudo usermod -a -G docker ec2-user
+            sudo chmod 666 /var/run/docker.sock
   
   CloudShirtASG:
     Type: AWS::AutoScaling::AutoScalingGroup
