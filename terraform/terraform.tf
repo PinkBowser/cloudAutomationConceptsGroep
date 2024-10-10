@@ -18,5 +18,5 @@
 
 resource "aws_cloudformation_stack" "CloudShirt" {
   name = "CloudShirt"
-  template_body = "${path.module}/awsBasics/awsBasicsNetwerk.yaml"
+  template_body = file("C:\\Users\\Lucas\\Documents\\GitHub\\cloudAutomationConceptsGroep\\awsBasics\\awsBasicsNetwerk.yaml")
 }
