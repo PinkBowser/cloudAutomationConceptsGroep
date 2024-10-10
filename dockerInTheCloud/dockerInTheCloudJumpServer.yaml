@@ -1,0 +1,20 @@
+Resources:
+  CloudShirtEC2:
+    Type: AWS::EC2::Instance
+    Properties:
+        BlockDeviceMappings: 
+        - DeviceName: /dev/xvda
+          Ebs:
+            DeleteOnTermination: true 
+            VolumeType: gp3
+            VolumeSize: 30
+            Encrypted: "true" 
+        InstanceType: t2.micro 
+        ImageId: ami-0ebfd941bbafe70c6 #Needs to be AMI 2023
+        KeyName: vockey 
+        SecurityGroupIds: 
+          - !ImportValue  CloudShirt:SecurityGroupId 
+        SubnetId: !ImportValue CloudShirt:PublicSubnet1 # Deploy the instance in the public subnet in AZ.
+        Tags:
+          - Key: Name
+            Value: cloudshirt-EC2
