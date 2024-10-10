@@ -25,14 +25,17 @@ Resources:
             # Update en installeer benodigde pakketten
             yum update -y
             yum upgrade -y
+            amazon-linux-extras install -y docker
+
+            service docker start
+            systemctl enable docker
+            docker swarm init --advertise-addr $(curl -s http://169.254.169.254/latest/meta-data/local-ipv4)
 
             # Clone de repository en bouw de applicatie
             cd /root
             sudo git clone https://github.com/Mystos16/CloudShirt.git
             sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
             sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
-
-            docker-compose build 
 
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint
@@ -44,3 +47,9 @@ Outputs:
     Value: !Ref CloudShirtBuildServer
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", EC2InstanceId ] ] # Fancy way of making the exported variable called "MyBase:Var"
+  
+  EC2InstanceIP:
+    Description: "The IP of the EC2"
+    Value: !Ref CloudShirtBuildServer
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", "PrivateIp"]]
