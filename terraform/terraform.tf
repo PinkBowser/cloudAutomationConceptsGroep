@@ -1,22 +1,25 @@
-# resource "aws_s3_bucket" "CloudShirt" {
-#   bucket = "CloudShirt"
+resource "aws_s3_bucket" "cloudshirt" {
+  bucket = "cloudshirt"
 
-#   tags = {
-#     Name        = "CloudShirt"
- 
-#   }
-# }
-
-# resource "aws_s3_bucket_object" "upload_files" {
-#   for_each = fileset("${path.module}/files", "**")
-
-#   bucket = aws_s3_bucket.example_bucket.bucket
-#   key    = each.value
-#   source = "${path.module}/files/${each.value}"
-#   acl    = "private"
-# }
-
-resource "aws_cloudformation_stack" "CloudShirt" {
-  name = "CloudShirt"
-  template_body = file("C:\\Users\\Lucas\\Documents\\GitHub\\cloudAutomationConceptsGroep\\awsBasics\\awsBasicsNetwerk.yaml")
+  tags = {
+    Name        = "cloudshirt"
+  }
 }
+
+resource "aws_s3_object" "cloudshirt" {
+  bucket = aws_s3_bucket.cloudshirt.id
+  key    = "awsBasicsNetwerk.yaml"
+  source = data.github_repository_file.cloudshirt.content
+  # source = "${path.module}/bestanden/awsBasicsNetwerk.yaml"
+}
+
+data "github_repository_file" "cloudshirt" {
+  repository          = "PinkBowser/cloudAutomationConceptsGroep"
+  branch              = "main"
+  file                = "awsBasics/awsBasicsNetwerk.yaml"
+}
+
+# resource "aws_cloudformation_stack" "CloudShirt" {
+#   name = "CloudShirt"
+#   template_body = file("C:\\Users\\Lucas\\Documents\\GitHub\\cloudAutomationConceptsGroep\\awsBasics\\awsBasicsNetwerk.yaml")
+# }
