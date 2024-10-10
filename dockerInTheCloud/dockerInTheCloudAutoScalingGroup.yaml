@@ -18,36 +18,19 @@ Resources:
         KeyName: vockey
         SecurityGroupIds:
           - !ImportValue CloudShirt:SecurityGroupId
-        UserData:
-          Fn::Base64: !Sub 
+        UserData: 
+          Fn::Base64: !Sub
           - |
             #!/bin/bash
             # Update en installeer benodigde pakketten
             yum update -y
             yum upgrade -y
-
-            # Installeer git en .NET 6.0 runtime en SDK
-            yum install -y git
-            yum install -y aspnetcore-runtime-6.0
-            yum install -y dotnet-sdk-6.0
-
-            # Update specifieke dotnet versie met dnf
-            dnf update dotnet6.0 --releasever=2023.1.20230719 -y
-
-            # Clone de repository en bouw de applicatie
-            cd /root
-            sudo git clone https://github.com/looking4ward/CloudShirt.git
-            sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
-            sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
-
-            cd CloudShirt/src/Web
-
-            # Publiceer de dotnet applicatie
-            sudo dotnet publish -c Release -o ../../../release
-            sudo dotnet run --urls "http://0.0.0.0:80"
-
-          - RDSENDPOINT:
-              Fn::ImportValue: CloudShirtDB:DBEndpoint
+            yum install -y docker
+            sudo service docker start
+            sudo systemctl enable docker
+            docker swarm join --token ${JoinToken} ${SwarmManagerPrivateIp}:2377
+          - SwarmManagerPrivateIp:
+              Fn::ImportValue: CloudShirtBuildServer:PrivateIp
   
   CloudShirtASG:
     Type: AWS::AutoScaling::AutoScalingGroup
@@ -55,7 +38,7 @@ Resources:
       LaunchTemplate:
         LaunchTemplateId: !Ref CloudShirtLaunchTemplate
         Version: !GetAtt CloudShirtLaunchTemplate.LatestVersionNumber
-      DesiredCapacity: '2'
+      DesiredCapacity: '3'
       MaxSize: '10'
       MinSize: '1'
       VPCZoneIdentifier: 
