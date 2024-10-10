@@ -19,8 +19,7 @@ Resources:
         SecurityGroupIds:
           - !ImportValue CloudShirt:SecurityGroupId
         UserData: 
-          Fn::Base64: !Sub
-          - |
+          Fn::Base64:
             #!/bin/bash
             # Update en installeer benodigde pakketten
             yum update -y
@@ -28,9 +27,6 @@ Resources:
             yum install -y docker
             sudo service docker start
             sudo systemctl enable docker
-            docker swarm join --token ${JoinToken} ${SwarmManagerPrivateIp}:2377
-          - SwarmManagerPrivateIp:
-              Fn::ImportValue: CloudShirtBuildServer:PrivateIp
   
   CloudShirtASG:
     Type: AWS::AutoScaling::AutoScalingGroup
