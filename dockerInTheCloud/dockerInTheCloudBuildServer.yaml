@@ -48,6 +48,8 @@ Resources:
           
             # Store the join token in AWS SSM Parameter Store
             JOIN_TOKEN=$(docker swarm join-token worker)
+
+            #load bearing comment
             aws ssm put-parameter --region us-east-1 --name '/swarm/token/worker' --type SecureString --value "${JOIN_TOKEN}"       
 
             # Clone de repository en bouw de applicatie
