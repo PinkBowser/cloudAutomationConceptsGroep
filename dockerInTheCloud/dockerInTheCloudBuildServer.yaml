@@ -1,4 +1,10 @@
 Resources:
+  # Create ECR Repository
+  ECRRepository:
+    Type: AWS::ECR::Repository
+    Properties:
+      RepositoryName: cloudshirt-repo
+
   CloudShirtBuildServer:
     Type: AWS::EC2::Instance
     Properties:
@@ -28,23 +34,32 @@ Resources:
             yum install -y git
             yum install -y docker
 
+            sudo usermod -a -G docker ec2-user
+
             sudo service docker start
             sudo systemctl enable docker
 
-            sudo usermod -a -G docker ec2-user
             sudo chmod 666 /var/run/docker.sock
             
             curl -SL https://github.com/docker/compose/releases/download/v2.29.6/docker-compose-linux-x86_64 -o /usr/local/bin/docker-compose
             sudo chmod +x /usr/local/bin/docker-compose
 
             sudo docker swarm init
-            # docker swarm join-token worker
+            
+            # Get the join token for worker nodes
+            JOIN_TOKEN=$(docker swarm join-token worker -q)
+          
+            # Store the join token in AWS SSM Parameter Store
+            WORKER_TOKEN=$(docker swarm join-token worker)
+            aws ssm put-parameter --region us-east-1 --name '/swarm/token/worker' --type SecureString --value "${WORKER_TOKEN}"       
 
             # Clone de repository en bouw de applicatie
             cd /root
             sudo git clone https://github.com/Mystos16/CloudShirt.git
             sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
             sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
+            
+
 
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint
@@ -62,3 +77,9 @@ Outputs:
     Value: !GetAtt CloudShirtBuildServer.PrivateIp
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", "PrivateIp"]]
+  
+  ECRRepositoryURI:
+    Description: "URI of the created ECR repository"
+    Value: !GetAtt ECRRepository.RepositoryUri
+    Export:
+      Name: !Join [ ":", [ !Ref "AWS::StackName", RepositoryUri ] ] # Fancy way of making the exported variable called "MyBase:Var"

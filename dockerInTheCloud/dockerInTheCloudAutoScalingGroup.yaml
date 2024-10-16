@@ -23,13 +23,24 @@ Resources:
           - |
             yum update -y
             yum upgrade -y
-            sudo yum install -y docker
+            yum install -y docker
+
+            sudo usermod -a -G docker ec2-user
 
             sudo service docker start
             sudo systemctl enable docker
-            
-            sudo usermod -a -G docker ec2-user
+
             sudo chmod 666 /var/run/docker.sock
+
+            # Retrieve the join token from SSM Parameter Store
+            WORKER_TOKEN=$(aws ssm get-parameter --region us-east-1 --name '/swarm/token/worker' --with-decryption --query 'Parameter.Value' --output text)
+            eval "${WORKER_TOKEN}"
+          
+            # Use the token to join the Docker Swarm
+            docker swarm join --token "$WORKER_TOKEN" ${MANAGERIP}:2377
+
+          - MANAGERIP:
+              Fn::ImportValue: CloudShirtBuildServer:PrivateIp
   
   CloudShirtASG:
     Type: AWS::AutoScaling::AutoScalingGroup
