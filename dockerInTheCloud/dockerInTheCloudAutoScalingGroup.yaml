@@ -32,13 +32,6 @@ Resources:
 
             sudo chmod 666 /var/run/docker.sock
 
-            # Retrieve the join token from SSM Parameter Store
-            JOIN_TOKEN=$(aws ssm get-parameter --region us-east-1 --name '/swarm/token/worker' --with-decryption --query 'Parameter.Value' --output text)
-            eval "${JOIN_TOKEN}"
-          
-            # Use the token to join the Docker Swarm
-            docker swarm join --token "$JOIN_TOKEN" ${MANAGERIP}:2377
-
           - MANAGERIP:
               Fn::ImportValue: CloudShirtBuildServer:PrivateIp
   

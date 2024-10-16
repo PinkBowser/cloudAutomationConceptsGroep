@@ -1,10 +1,4 @@
 Resources:
-  # Create ECR Repository
-  ECRRepository:
-    Type: AWS::ECR::Repository
-    Properties:
-      RepositoryName: cloudshirt-repo
-
   CloudShirtBuildServer:
     Type: AWS::EC2::Instance
     Properties:
@@ -47,10 +41,6 @@ Resources:
             sudo docker swarm init
           
             # Store the join token in AWS SSM Parameter Store
-            JOIN_TOKEN=$(docker swarm join-token worker)
-
-            #load bearing comment
-            aws ssm put-parameter --region us-east-1 --name '/swarm/token/worker' --type SecureString --value "${JOIN_TOKEN}"       
 
             # Clone de repository en bouw de applicatie
             cd /root
@@ -74,9 +64,3 @@ Outputs:
     Value: !GetAtt CloudShirtBuildServer.PrivateIp
     Export:
       Name: !Join [ ":", [ !Ref "AWS::StackName", "PrivateIp"]]
-  
-  ECRRepositoryURI:
-    Description: "URI of the created ECR repository"
-    Value: !GetAtt ECRRepository.RepositoryUri
-    Export:
-      Name: !Join [ ":", [ !Ref "AWS::StackName", RepositoryUri ] ] # Fancy way of making the exported variable called "MyBase:Var"
