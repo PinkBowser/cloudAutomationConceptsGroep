@@ -1,6 +1,6 @@
-# provider "google" {
-#   project     = "saxionclouds"
-#   region      = "europe-north1"
-#   zone = "europe-north1-a"
-#   credentials = file("C:/Users/Lucas/google/saxionclouds-ab524f132ccb.json")
-# }
+provider "google" {
+  project     = "saxionclouds"
+  region      = "europe-west1"
+  zone        = "europe-west1-b"
+  credentials = file("./saxionclouds.json")
+}

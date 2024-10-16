@@ -1,1 +1,1 @@
-{"Modules":[{"Key":"","Source":"","Dir":"."},{"Key":"gke","Source":"registry.terraform.io/terraform-google-modules/kubernetes-engine/google","Version":"33.1.0","Dir":".terraform/modules/gke"}]}
+{"Modules":[{"Key":"gke","Source":"registry.terraform.io/terraform-google-modules/kubernetes-engine/google//modules/beta-autopilot-public-cluster","Version":"33.1.0","Dir":".terraform/modules/gke/modules/beta-autopilot-public-cluster"},{"Key":"","Source":"","Dir":"."}]}
