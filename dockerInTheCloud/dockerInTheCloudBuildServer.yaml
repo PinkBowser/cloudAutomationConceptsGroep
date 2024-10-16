@@ -1,9 +1,3 @@
-Parameters:
-  DOCKERTOKEN:
-    Description: DOCKER HUB TOKEN
-    Type: String
-    Default: DCCKER_TOKEN
-
 Resources:
   CloudShirtBuildServer:
     Type: AWS::EC2::Instance
@@ -46,10 +40,7 @@ Resources:
 
             sudo docker swarm init
           
-            # Store the join token in AWS SSM Parameter Store
-
-            docker login -u mystos16 -p ${DOCKERTOKEN}
-
+            # Store the join token in AWS SSM Parameter Storw
 
             # Clone de repository en bouw de applicatie
             cd /root
