@@ -42,6 +42,9 @@ Resources:
           
             # Store the join token in AWS SSM Parameter Store
 
+            docker login -u mystos16 -p dckr_pat__RAmJcfocNKR7q2O5k7aJBlb38k
+
+
             # Clone de repository en bouw de applicatie
             cd /root
             sudo git clone https://github.com/Mystos16/CloudShirt.git
