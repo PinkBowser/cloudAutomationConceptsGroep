@@ -1,4 +1,9 @@
 Resources:
+  S3Bucket:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: swarm-token
+  
   CloudShirtBuildServer:
     Type: AWS::EC2::Instance
     Properties:
@@ -42,7 +47,9 @@ Resources:
             sudo docker swarm init
           
             # Store the join token in AWS SSM Parameter Store
-
+            JOIN_TOKEN=$(docker swarm join-token -q worker)
+            echo "Swarm Token: $JOIN_TOKEN"
+            aws s3 cp <(echo $JOIN_TOKEN) s3://${S3Bucket}/swarm-token.txt
 
             # Clone de repository en bouw de applicatie
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
@@ -57,6 +64,7 @@ Resources:
 
             docker-compose build 
             docker-compose push
+            docker stack deploy -c docker-compose.yml eshop-stack
 
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint
