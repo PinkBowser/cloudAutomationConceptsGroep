@@ -1,7 +1,7 @@
 #!/bin/bash
 # Variables
-STATIC_WEBSITE_BUCKET="<replace-with-static-website-bucket-name>"
-BACKUP_BUCKET="<replace-with-backup-bucket-name>"
+STATIC_WEBSITE_BUCKET="static-bucket"
+BACKUP_BUCKET="backup-bucket"
 TIMESTAMP=$(date +"%Y-%m-%d-%H-%M-%S")
 BACKUP_PATH="s3://$BACKUP_BUCKET/backup-$TIMESTAMP/"
 
