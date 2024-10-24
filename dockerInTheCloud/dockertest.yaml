@@ -1,9 +1,4 @@
 Resources:
-  S3Bucket:
-    Type: AWS::S3::Bucket
-    Properties:
-      BucketName: swarm-token
-  
   CloudShirtBuildServer:
     Type: AWS::EC2::Instance
     Properties:

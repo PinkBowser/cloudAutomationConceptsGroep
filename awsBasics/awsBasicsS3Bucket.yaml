@@ -1,4 +1,14 @@
- S3Bucket:
+Resources:
+  S3BucketBackup:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: backup-bucket
+
+  S3BucketStatic:
+    Type: AWS::S3::Bucket
+    Properties:
+      BucketName: static-bucket
+      WebsiteConfiguration:
+        IndexDocument: index.html
+        ErrorDocument: error.html
+      AccessControl: PublicRead  # Make sure your content is intended to be public.
