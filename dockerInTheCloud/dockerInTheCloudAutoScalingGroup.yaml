@@ -15,6 +15,7 @@ Resources:
               Encrypted: "true"
         InstanceType: t2.micro
         ImageId: ami-0ebfd941bbafe70c6
+        IamInstanceProfile: 'LabInstanceProfile'
         KeyName: vockey
         SecurityGroupIds:
           - !ImportValue CloudShirt:SecurityGroupId
@@ -31,6 +32,8 @@ Resources:
             sudo systemctl enable docker
 
             sudo chmod 666 /var/run/docker.sock
+
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
 
           - MANAGERIP:
               Fn::ImportValue: CloudShirtBuildServer:PrivateIp

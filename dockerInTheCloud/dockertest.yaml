@@ -43,13 +43,21 @@ Resources:
           
             # Store the join token in AWS SSM Parameter Store
 
+
             # Clone de repository en bouw de applicatie
-            sudo cd /root
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
+
+            aws ecr create-repository --repository-name eshopwebmvc
+            aws ecr create-repository --repository-name eshoppublicapi
+
             sudo git clone https://github.com/Mystos16/CloudShirt.git
+            cd CloudShirt/
             sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
             sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
 
             docker-compose build 
+            docker-compose push
+
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint
 
