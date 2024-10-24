@@ -12,7 +12,7 @@ Resources:
         InstanceType: t2.micro 
         ImageId: ami-0ebfd941bbafe70c6 #Needs to be AMI 2023
         KeyName: vockey 
-        SecurityGroupIds: 
+        SecurityGroupIds:
           - !ImportValue  CloudShirt:SecurityGroupId 
         SubnetId: !ImportValue CloudShirt:PublicSubnet1 # Deploy the instance in the public subnet in AZ.
         Tags:
