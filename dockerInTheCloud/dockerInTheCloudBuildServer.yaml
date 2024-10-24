@@ -21,7 +21,7 @@ Resources:
         UserData: 
           Fn::Base64: !Sub
           - |
-           #!/bin/bash
+            #!/bin/bash
             # Update en installeer benodigde pakketten
             yum update -y
             yum upgrade -y
@@ -41,7 +41,9 @@ Resources:
             sudo docker swarm init
           
             # Store the join token in AWS SSM Parameter Store
-
+            JOIN_TOKEN=$(docker swarm join-token -q worker)
+            echo "Swarm Token: $JOIN_TOKEN"
+            aws ssm put-parameter --name /swarm/joinToken --value $JOIN_TOKEN --type String --overwrite
 
             # Clone de repository en bouw de applicatie
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
@@ -55,8 +57,8 @@ Resources:
             sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
 
             docker-compose build 
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
             docker-compose push
-            docker stack deploy -c docker-compose.yml eshop-stack
             
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint
