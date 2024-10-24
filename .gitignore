@@ -19,6 +19,7 @@ terraform/google/.terraform/providers/registry.terraform.io/hashicorp/kubernetes
 terraform/google/.terraform/providers/registry.terraform.io/hashicorp/google/6.7.0/windows_amd64/terraform-provider-google_v6.7.0_x5.exe
 terraform/google/.terraform/providers/registry.terraform.io/hashicorp/google/6.7.0/windows_amd64/LICENSE.txt
 terraform/google/.terraform.lock.hcl
+<<<<<<< Updated upstream
 terraform/google/.terraform.tfstate.lock.info
 terraform/google/.terraform/modules/gke/
 terraform/google/.terraform/modules/modules.json
@@ -31,3 +32,6 @@ terraform/google/.terraform/providers/registry.terraform.io/hashicorp/kubernetes
 terraform/google/.terraform/providers/registry.terraform.io/hashicorp/random/3.6.3/windows_386/LICENSE.txt
 terraform/google/.terraform/providers/registry.terraform.io/hashicorp/random/3.6.3/windows_386/terraform-provider-random_v3.6.3_x5.exe
 terraform/google/saxionclouds.json
+=======
+terraform/google/.terraform/modules/gke/
+>>>>>>> Stashed changes
