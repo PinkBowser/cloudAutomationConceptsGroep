@@ -5,8 +5,6 @@ Resources:
     Type: "AWS::ECR::Repository"
     Properties: 
       RepositoryName: "cloudshirtecr"
-      ImageScanningConfiguration:
-        scanOnPush: false
       LifecyclePolicy:
         LifecyclePolicyText: |
           {
