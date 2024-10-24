@@ -2,9 +2,29 @@ Description: CloudFormation template to create an ECR repository.
 
 Resources:
   MyECRRepository:
-    Type: AWS::ECR::Repository
-    Properties:
-      EmptyOnDelete: true
+    Type: "AWS::ECR::Repository"
+    Properties: 
+      RepositoryName: "CloudShirtECR"
+      ImageScanningConfiguration:
+        scanOnPush: false
+      LifecyclePolicy:
+        LifecyclePolicyText: |
+          {
+            "rules": [
+              {
+                "rulePriority": 1,
+                "description": "Retain only the last 5 images",
+                "selection": {
+                  "tagStatus": "any",
+                  "countType": "imageCountMoreThan",
+                  "countNumber": 5
+                },
+                "action": {
+                  "type": "expire"
+                }
+              }
+            ]
+          }
 
 Outputs:
   ECRRepositoryURI:
