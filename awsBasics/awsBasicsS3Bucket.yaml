@@ -8,6 +8,3 @@ Resources:
     Type: AWS::S3::Bucket
     Properties:
       BucketName: cloudshirt-static-bucket
-      WebsiteConfiguration:
-        IndexDocument: index.html
-        ErrorDocument: error.html

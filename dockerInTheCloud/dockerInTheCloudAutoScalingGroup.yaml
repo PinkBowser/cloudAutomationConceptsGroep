@@ -15,7 +15,8 @@ Resources:
               Encrypted: "true"
         InstanceType: t2.micro
         ImageId: ami-0ebfd941bbafe70c6
-        IamInstanceProfile: 'LabInstanceProfile'
+        IamInstanceProfile:
+          Name: LabInstanceProfile
         KeyName: vockey
         SecurityGroupIds:
           - !ImportValue CloudShirt:SecurityGroupId

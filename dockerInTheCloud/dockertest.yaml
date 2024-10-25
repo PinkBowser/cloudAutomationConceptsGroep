@@ -15,7 +15,7 @@ Resources:
         KeyName: vockey 
         SecurityGroupIds:
           - !ImportValue  CloudShirt:SecurityGroupId 
-        SubnetId: !ImportValue CloudShirt:PublicSubnet1 # Deploy the instance in the public subnet in AZ.
+        SubnetId: !ImportValue CloudShirt:PrivateSubnet1 # Deploy the instance in the public subnet in AZ.
         Tags:
           - Key: Name
             Value: cloudshirt-buildserver
@@ -49,7 +49,7 @@ Resources:
             # Clone de repository en bouw de applicatie
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
 
-            sudo git clone https://github.com/Mystos16/CloudShirt.git
+            git clone https://github.com/Mystos16/CloudShirt.git
             cd CloudShirt/
 
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
