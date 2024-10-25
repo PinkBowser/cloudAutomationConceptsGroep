@@ -46,9 +46,6 @@ Resources:
             echo "Swarm Token: $JOIN_TOKEN"
             aws ssm put-parameter --name /swarm/joinToken --value $JOIN_TOKEN --type String --overwrite
 
-            # Clone de repository en bouw de applicatie
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
-
             git clone https://github.com/Mystos16/CloudShirt.git
             cd CloudShirt/
 
