@@ -2,12 +2,12 @@ Resources:
   S3BucketBackup:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: backup-bucket
+      BucketName: cloudshirt-backup-bucket
 
   S3BucketStatic:
     Type: AWS::S3::Bucket
     Properties:
-      BucketName: static-bucket
+      BucketName: cloudshirt-static-bucket
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
