@@ -1,4 +1,6 @@
 Resources:
+
+
   CloudShirtBuildServer:
     Type: AWS::EC2::Instance
     Properties:
@@ -9,7 +11,7 @@ Resources:
             VolumeType: gp3
             VolumeSize: 30
             Encrypted: "true" 
-        InstanceType: t2.micro 
+        InstanceType: t2.large 
         ImageId: ami-0ebfd941bbafe70c6 #Needs to be AMI 2023
         KeyName: vockey 
         SecurityGroupIds: 
@@ -45,11 +47,7 @@ Resources:
             echo "Swarm Token: $JOIN_TOKEN"
             aws ssm put-parameter --name /swarm/joinToken --value $JOIN_TOKEN --type String --overwrite
 
-            # Clone de repository en bouw de applicatie
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
-
-            aws ecr create-repository --repository-name eshopwebmvc
-            aws ecr create-repository --repository-name eshoppublicapi
 
             sudo cd /root
             git clone https://github.com/Mystos16/CloudShirt.git
@@ -57,9 +55,23 @@ Resources:
             sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
             sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
 
-            docker-compose build 
+            commands=$(cat << 'EOF'
+            git pull
+            docker-compose build
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
             docker-compose push
+            docker stack deploy -c docker-compose.yml eshop-stack -d
+            EOF
+            )
+
+            # Define the cron job string
+            cronjob="0 23 * * * $commands"
+
+            # Check if the job already exists in the crontab
+            (crontab -l | grep -F "$commands") && exit 0
+
+            # Add the new cron job
+            (crontab -l; echo "$cronjob") | crontab -
             
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint

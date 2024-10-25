@@ -38,6 +38,8 @@ Resources:
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
             JOIN_TOKEN=$(aws ssm get-parameter --name /swarm/joinToken --query "Parameter.Value" --output text)
             docker swarm join --token $JOIN_TOKEN ${MANAGERIP}:2377
+            
+            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
 
           - MANAGERIP:
               Fn::ImportValue: CloudShirtBuildServer:PrivateIp
