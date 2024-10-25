@@ -11,4 +11,3 @@ Resources:
       WebsiteConfiguration:
         IndexDocument: index.html
         ErrorDocument: error.html
-      AccessControl: PublicRead  # Make sure your content is intended to be public.

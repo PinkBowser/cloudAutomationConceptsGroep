@@ -1,7 +1,7 @@
 #!/bin/bash
 # Variables
-STATIC_WEBSITE_BUCKET="static-bucket"
-BACKUP_BUCKET="backup-bucket"
+STATIC_WEBSITE_BUCKET="cloudshirt-static-bucket"
+BACKUP_BUCKET="cloudshirt-backup-bucket"
 TIMESTAMP=$(date +"%Y-%m-%d-%H-%M-%S")
 BACKUP_PATH="s3://$BACKUP_BUCKET/backup-$TIMESTAMP/"
 
