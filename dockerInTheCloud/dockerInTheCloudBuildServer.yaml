@@ -57,23 +57,13 @@ Resources:
             sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
             sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
 
-            commands=$(cat << 'EOF'
-            git pull
-            docker-compose build
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
-            docker-compose push
-            docker stack deploy -c docker-compose.yml eshop-stack -d
-            EOF
-            )
-
-            # Define the cron job string
-            cronjob="0 23 * * * $commands"
-
-            # Check if the job already exists in the crontab
-            (crontab -l | grep -F "$commands") && exit 0
-
-            # Add the new cron job
-            (crontab -l; echo "$cronjob") | crontab -
+            SCRIPT_PATH="$nightly_build.sh"
+            echo "#!/bin/bash" > "$SCRIPT_PATH"
+            echo "git pull" >> "$SCRIPT_PATH"
+            echo "docker-compose build" >> "$SCRIPT_PATH"
+            echo "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com" >> "$SCRIPT_PATH"
+            echo "docker-compose push" >> "$SCRIPT_PATH"
+            echo "docker stack deploy -c docker-compose.yml eshop-stack -d" >> "$SCRIPT_PATH"
             
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint
