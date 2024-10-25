@@ -51,7 +51,7 @@ Resources:
             aws ecr create-repository --repository-name eshopwebmvc
             aws ecr create-repository --repository-name eshoppublicapi
 
-            sudo git clone https://github.com/Mystos16/CloudShirt.git
+            git clone https://github.com/Mystos16/CloudShirt.git
             cd CloudShirt/
             sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
             sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
