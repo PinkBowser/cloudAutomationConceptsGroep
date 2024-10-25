@@ -27,6 +27,9 @@ Resources:
             sudo yum update -y
             sudo yum upgrade -y
             sudo yum install -y git
+            sudo yum install cronie -y
+            sudo systemctl enable crond.service
+            sudo systemctl start crond.service
             sudo yum install -y docker
 
             sudo usermod -a -G docker ec2-user
@@ -64,6 +67,10 @@ Resources:
             echo "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com" >> "$SCRIPT_PATH"
             echo "docker-compose push" >> "$SCRIPT_PATH"
             echo "docker stack deploy -c docker-compose.yml eshop-stack -d" >> "$SCRIPT_PATH"
+            chmod +x "$SCRIPT_PATH"
+            (crontab -l 2>/dev/null; echo "0 23 * * * $SCRIPT_PATH") | crontab -
+            
+            #to do this by hand use ./nightly_build.sh
             
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint
