@@ -23,10 +23,10 @@ Resources:
           - |
             #!/bin/bash
             # Update en installeer benodigde pakketten
-            yum update -y
-            yum upgrade -y
-            yum install -y git
-            yum install -y docker
+            sudo yum update -y
+            sudo yum upgrade -y
+            sudo yum install -y git
+            sudo yum install -y docker
 
             sudo usermod -a -G docker ec2-user
 
