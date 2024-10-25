@@ -1,6 +1,4 @@
 Resources:
-
-
   CloudShirtBuildServer:
     Type: AWS::EC2::Instance
     Properties:
@@ -13,6 +11,7 @@ Resources:
             Encrypted: "true" 
         InstanceType: t2.large 
         ImageId: ami-0ebfd941bbafe70c6 #Needs to be AMI 2023
+        IamInstanceProfile: 'LabInstanceProfile'
         KeyName: vockey 
         SecurityGroupIds: 
           - !ImportValue  CloudShirt:SecurityGroupId 
@@ -46,6 +45,9 @@ Resources:
             JOIN_TOKEN=$(docker swarm join-token -q worker)
             echo "Swarm Token: $JOIN_TOKEN"
             aws ssm put-parameter --name /swarm/joinToken --value $JOIN_TOKEN --type String --overwrite
+
+            aws ecr create-repository --repository-name eshopwebmvc
+            aws ecr create-repository --repository-name eshoppublicapi
 
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
 
