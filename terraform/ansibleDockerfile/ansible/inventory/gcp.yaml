@@ -1,0 +1,11 @@
+---
+all:
+  vars:
+    zone: europe-west1-b
+    region: europe-west1
+    project_id: saxionclouds
+    gcloud_sa_path: "gcp-credentials/saxionclouds.json"
+    credentials_file: "{{ lookup('env','HOME') }}/{{ gcloud_sa_path }}"
+    gcloud_service_account: terraform@saxionclouds.iam.gserviceaccount.com
+
+    cluster_name: autopilot-cluster-cloudshirt
