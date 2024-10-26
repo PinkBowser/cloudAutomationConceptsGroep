@@ -1,6 +1,4 @@
 Resources:
-
-
   CloudShirtBuildServer:
     Type: AWS::EC2::Instance
     Properties:
@@ -13,6 +11,7 @@ Resources:
             Encrypted: "true" 
         InstanceType: t2.large 
         ImageId: ami-0ebfd941bbafe70c6 #Needs to be AMI 2023
+        IamInstanceProfile: 'LabInstanceProfile'
         KeyName: vockey 
         SecurityGroupIds: 
           - !ImportValue  CloudShirt:SecurityGroupId 
@@ -28,6 +27,9 @@ Resources:
             sudo yum update -y
             sudo yum upgrade -y
             sudo yum install -y git
+            sudo yum install cronie -y
+            sudo systemctl enable crond.service
+            sudo systemctl start crond.service
             sudo yum install -y docker
 
             sudo usermod -a -G docker ec2-user
@@ -47,31 +49,28 @@ Resources:
             echo "Swarm Token: $JOIN_TOKEN"
             aws ssm put-parameter --name /swarm/joinToken --value $JOIN_TOKEN --type String --overwrite
 
+            aws ecr create-repository --repository-name eshopwebmvc
+            aws ecr create-repository --repository-name eshoppublicapi
+
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
 
             sudo cd /root
-            git clone https://github.com/Mystos16/CloudShirt.git
+            sudo git clone https://github.com/Mystos16/CloudShirt.git
             cd CloudShirt/
             sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
             sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
 
-            commands=$(cat << 'EOF'
-            git pull
-            docker-compose build
-            aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
-            docker-compose push
-            docker stack deploy -c docker-compose.yml eshop-stack -d
-            EOF
-            )
-
-            # Define the cron job string
-            cronjob="0 23 * * * $commands"
-
-            # Check if the job already exists in the crontab
-            (crontab -l | grep -F "$commands") && exit 0
-
-            # Add the new cron job
-            (crontab -l; echo "$cronjob") | crontab -
+            SCRIPT_PATH="$nightly_build.sh"
+            echo "#!/bin/bash" > "$SCRIPT_PATH"
+            echo "git pull" >> "$SCRIPT_PATH"
+            echo "docker-compose build" >> "$SCRIPT_PATH"
+            echo "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com" >> "$SCRIPT_PATH"
+            echo "docker-compose push" >> "$SCRIPT_PATH"
+            echo "docker stack deploy -c docker-compose.yml eshop-stack -d" >> "$SCRIPT_PATH"
+            chmod +x "$SCRIPT_PATH"
+            (crontab -l 2>/dev/null; echo "0 23 * * * $SCRIPT_PATH") | crontab -
+            
+            #to do this by hand use ./nightly_build.sh
             
           - RDSENDPOINT:
               Fn::ImportValue: CloudShirtDB:DBEndpoint
