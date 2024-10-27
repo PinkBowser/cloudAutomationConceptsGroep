@@ -1,0 +1,15 @@
+- name: "Connect to cluster (update kubeconfig)"
+  shell: "gcloud container clusters get-credentials {{ cluster_name }} --zone {{ region }} --project {{ project_id }}"
+
+- name: Create a k8s namespace
+  kubernetes.core.k8s:
+    name: cloudshirt
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Create a deployment
+  kubernetes.core.k8s:
+    namespace: cloudshirt
+    state: present
+    src: /work/deployment.yaml
