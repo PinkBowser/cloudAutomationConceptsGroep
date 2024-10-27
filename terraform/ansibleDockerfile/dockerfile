@@ -4,7 +4,13 @@ RUN apt-get update; \
     apt-get upgrade; \
     apt-get install -y gcc python3; \
     apt-get install -y python3-pip; \
-    apt-get clean all
+    apt-get clean all; \
+    mkdir /root/gcp-credentials
 RUN pip3 install --upgrade pip; \
     pip3 install "ansible==${ANSIBLE_VERSION}"; \
-    pip3 install ansible
+    pip3 install ansible; \
+    pip install requests; \
+    pip install google-auth
+RUN ansible-galaxy collection install google.cloud; \
+    ansible-galaxy collection install community.kubernetes; \
+    ansible-galaxy collection install cloud.common
