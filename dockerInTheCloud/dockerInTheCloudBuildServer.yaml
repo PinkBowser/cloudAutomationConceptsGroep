@@ -59,17 +59,9 @@ Resources:
             cd CloudShirt/
             sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json
             sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
-
-            SCRIPT_PATH="$nightly_build.sh"
-            echo "#!/bin/bash" > "$SCRIPT_PATH"
-            echo "git pull" >> "$SCRIPT_PATH"
-            echo "docker-compose build" >> "$SCRIPT_PATH"
-            echo "aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com" >> "$SCRIPT_PATH"
-            echo "docker-compose push" >> "$SCRIPT_PATH"
-            echo "docker stack deploy -c docker-compose.yml eshop-stack" >> "$SCRIPT_PATH"
             
-            chmod +x "$SCRIPT_PATH"
-            (crontab -l 2>/dev/null; echo "0 23 * * * $SCRIPT_PATH") | crontab -
+            chmod +x nightly_build.sh
+            (crontab -l 2>/dev/null; echo "0 23 * * * nightly_build.sh") | crontab -
             
             #to do this by hand use ./nightly_build.sh
             
