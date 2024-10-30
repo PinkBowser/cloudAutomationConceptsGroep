@@ -24,16 +24,16 @@ Resources:
           Fn::Base64: !Sub 
           - |
             #!/bin/bash
-            sudo sudo yum update -y
-            sudo sudo yum upgrade -y
-            sudo sudo yum install -y docker
+            yum update -y
+            yum upgrade -y
+            yum install -y docker
 
-            sudo usermod -a -G docker ec2-user
+            usermod -a -G docker ec2-user
 
-            sudo service docker start
-            sudo systemctl enable docker
+            service docker start
+            systemctl enable docker
 
-            sudo chmod 666 /var/run/docker.sock
+            chmod 666 /var/run/docker.sock
 
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
             JOIN_TOKEN=$(aws ssm get-parameter --name /swarm/joinToken --query "Parameter.Value" --output text)
