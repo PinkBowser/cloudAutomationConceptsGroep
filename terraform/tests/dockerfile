@@ -1,0 +1,16 @@
+# Base immage
+FROM rockylinux:9
+# Updates uitvoeren en directory maken voor de Credentials
+RUN yum update -y; \
+    yum upgrade -y
+# Installeer git en .NET 6.0 runtime en SDK
+RUN yum install -y git; \
+    yum install -y aspnetcore-runtime-6.0; \
+    yum install -y dotnet-sdk-6.0
+# Update specifieke dotnet versie met dnf
+RUN dnf update dotnet6.0 --releasever=2023.1.20230719 -y
+# Clone de repository en bouw de applicatie
+RUN cd /root; \
+    sudo git clone https://github.com/looking4ward/CloudShirt.git: \
+    sed -i 's/Server.*CatalogDb;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json; \
+    sed -i 's/Server.*Identity;/Server=${RDSENDPOINT},1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json

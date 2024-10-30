@@ -8,7 +8,7 @@
     kind: Namespace
     state: present
 
-- name: Create a deployment
+- name: Create deployment
   kubernetes.core.k8s:
     namespace: cloudshirt
     state: present
