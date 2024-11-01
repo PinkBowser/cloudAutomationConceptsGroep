@@ -31,22 +31,22 @@
     owner: bin
     mode: u=rw,g=r,o=r
 
-- name: Authenticate Docker with Google Cloud
-  command: gcloud auth configure-docker {{ region }}-docker.pkg.dev
-  register: auth_output
+# - name: Authenticate Docker with Google Cloud
+#   command: gcloud auth configure-docker {{ region }}-docker.pkg.dev
+#   register: auth_output
 
-- name: Build the Docker image
-  community.docker.docker_image:
-    build:
-      path: "{{ role_path }}/files/dockerfile"
-    name: "{{ region }}-docker.pkg.dev/{{ project_id }}/cloudshirt-repo/cloudshirt"
-    tag: "latest"
-    state: present
-    source: build
+# - name: Build the Docker image
+#   community.docker.docker_image:
+#     build:
+#       path: "{{ role_path }}/files/dockerfile"
+#     name: "{{ region }}-docker.pkg.dev/{{ project_id }}/cloudshirt-repo/cloudshirt"
+#     tag: "latest"
+#     state: present
+#     source: build
 
 
-- name: Push the Docker image to Google Artifact Registry
-  community.docker.docker_image:
-    name: "{{ gcloud_region }}-docker.pkg.dev/{{ project_id }}/{{ repo_name }}/{{ image_name }}"
-    tag: "{{ tag }}"
-    state: pushed
+# - name: Push the Docker image to Google Artifact Registry
+#   community.docker.docker_image:
+#     name: "{{ gcloud_region }}-docker.pkg.dev/{{ project_id }}/{{ repo_name }}/{{ image_name }}"
+#     tag: "{{ tag }}"
+#     state: pushed
