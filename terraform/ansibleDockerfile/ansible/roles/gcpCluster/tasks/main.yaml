@@ -8,8 +8,45 @@
     kind: Namespace
     state: present
 
-- name: Create deployment
-  kubernetes.core.k8s:
-    namespace: cloudshirt
+- name: Get Google Cloud SQL instance details
+  google.cloud.gcp_sql_instance:
+    auth_kind: serviceaccount
+    service_account_file: /root/gcp-credentials/saxionclouds.json
+    project: "{{ project_id }}"
+    name: "autopilot-cloudshirt-database"
+  register: sql_instance
+
+- name: Set SQL instance IP address
+  set_fact:
+    RDSENDPOINT: "{{ sql_instance.ipAddresses }}"
+    
+- name: Extract IP address from RDSENDPOINT
+  set_fact:
+    rds_ip: "{{ RDSENDPOINT | regex_search('([0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3})') }}"
+
+- name: Copy IP addres
+  ansible.builtin.template:
+    src: dockerfile
+    dest: /work/ansible/roles/gcpCluster/files/dockerfile
+    owner: bin
+    mode: u=rw,g=r,o=r
+
+- name: Authenticate Docker with Google Cloud
+  command: gcloud auth configure-docker {{ region }}-docker.pkg.dev
+  register: auth_output
+
+- name: Build the Docker image
+  community.docker.docker_image:
+    build:
+      path: "{{ role_path }}/files/dockerfile"
+    name: "{{ region }}-docker.pkg.dev/{{ project_id }}/cloudshirt-repo/cloudshirt"
+    tag: "latest"
     state: present
-    src: /work/deployment.yaml
+    source: build
+
+
+- name: Push the Docker image to Google Artifact Registry
+  community.docker.docker_image:
+    name: "{{ gcloud_region }}-docker.pkg.dev/{{ project_id }}/{{ repo_name }}/{{ image_name }}"
+    tag: "{{ tag }}"
+    state: pushed

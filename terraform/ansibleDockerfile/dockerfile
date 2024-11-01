@@ -6,6 +6,7 @@ RUN apt-get update; \
     apt-get install -y gcc python3; \
     apt-get install -y python3-pip; \
     apt-get clean all; \
+    apt-get install docker
     mkdir /root/gcp-credentials
 # Instaleer curl
 RUN apt-get update && apt-get install -y \
@@ -25,7 +26,8 @@ RUN pip3 install --upgrade pip; \
     pip3 install ansible; \
     pip install requests; \
     pip install google-auth; \
-    pip install kubernetes
+    pip install kubernetes; \
+    pip install docker
 # Instaleer Ansible-Galaxy packages
 RUN ansible-galaxy collection install google.cloud; \
     ansible-galaxy collection install community.kubernetes; \
@@ -36,3 +38,5 @@ RUN apt-get install -y apt-transport-https ca-certificates curl gnupg; \
     chmod 644 /etc/apt/sources.list.d/kubernetes.list; \
     apt-get install -y kubectl; \
     apt-get install google-cloud-sdk-gke-gcloud-auth-plugin -y
+RUN apt-get update; \
+    apt-get -y upgrade

@@ -1,3 +1,5 @@
 ---
-app: nginx
-image: nginx:1.19.9-alpine
+image_name: cloudshirt
+tag: latest
+repository_name: my-repository # Change to your repository name
+gar_image_name: "{{ region }}-docker.pkg.dev/{{ gcr_project_id }}/{{ repository_name }}/{{ image_name }}:{{ tag }}"

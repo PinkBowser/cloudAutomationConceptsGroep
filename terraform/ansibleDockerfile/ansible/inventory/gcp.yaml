@@ -7,5 +7,4 @@ all:
     gcloud_sa_path: "gcp-credentials/saxionclouds.json"
     credentials_file: "{{ lookup('env','HOME') }}/{{ gcloud_sa_path }}"
     gcloud_service_account: terraform@saxionclouds.iam.gserviceaccount.com
-
     cluster_name: autopilot-cluster-cloudshirt
