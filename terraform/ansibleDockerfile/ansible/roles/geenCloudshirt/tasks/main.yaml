@@ -1,0 +1,61 @@
+- name: "Connect to cluster (update kubeconfig)"
+  shell: "gcloud container clusters get-credentials {{ cluster_name }} --zone {{ region }} --project {{ project_id }}"
+
+- name: Create a k8s namespace
+  kubernetes.core.k8s:
+    name: nginx
+    api_version: v1
+    kind: Namespace
+    state: present
+
+- name: Deploy 5 replicas
+  kubernetes.core.k8s:
+    state: present
+    namespace: nginx
+    name: nginx
+    definition:
+      apiVersion: v1
+      kind: Deployment
+      name: nginx
+      spec:
+        replicas: 5
+        selector:
+          matchLabels: 
+            app: nginx
+        template:
+          metadata:
+            labels: 
+              app: nginx
+          spec:
+            containers:
+            - name: nginx
+              image: "{{ image }}"
+
+- name: Create LoadBalancer service
+  kubernetes.core.k8s:
+    state: present
+    namespace: nginx
+    definition:
+      apiVersion: v1
+      kind: Service
+      metadata:
+        name: nginxloadbalancer
+      spec:
+        selector:
+          app: nginx
+        type: LoadBalancer
+        ports:
+          - protocol: TCP
+            port: 80
+            name: port80
+            targetPort: 8080
+  register: lb_service
+
+- name: Wait for external IP to be assigned
+  pause:
+    minutes: 1
+  when: lb_service.metadata.loadBalancerIP is not defined
+
+- name: Display the LoadBalancer service details
+  debug:
+    var: lb_service

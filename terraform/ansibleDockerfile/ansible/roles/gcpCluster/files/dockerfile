@@ -11,9 +11,9 @@ RUN apt-get update -y && \
     rm -rf /var/lib/apt/lists/*  # Clean up APT cache
 
 # Clone the repository and prepare configuration
-RUN git clone https://github.com/looking4ward/CloudShirt.git /root/CloudShirt && \
-    sed -i 's/Server.*CatalogDb;/Server=34.79.56.213,1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json && \
-    sed -i 's/Server.*Identity;/Server=34.79.56.213,1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
+ RUN git clone https://github.com/looking4ward/CloudShirt.git /root/CloudShirt && \
+    sed -i 's/Server.*CatalogDb;/Server=35.195.68.28,1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.CatalogDb;/' /root/CloudShirt/src/Web/appsettings.json && \
+    sed -i 's/Server.*Identity;/Server=35.195.68.28,1433;User ID=admin;Password=CloudShirt123;Initial Catalog=Microsoft.eShopOnWeb.Identity;/' /root/CloudShirt/src/Web/appsettings.json
 
 # Set working directory to the project path and publish the application
 WORKDIR /root/CloudShirt/src/Web

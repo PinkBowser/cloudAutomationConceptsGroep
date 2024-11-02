@@ -1,0 +1,30 @@
+- name: "Connect to cluster (update kubeconfig)"
+  shell: "gcloud container clusters get-credentials {{ cluster_name }} --zone {{ region }} --project {{ project_id }}"
+
+
+- name: Get list of all pod names with the label app=nginx
+  command: "kubectl get pods -n nginx -l app=nginx -o jsonpath='{.items[*].metadata.name}'"
+  register: pod_names
+
+- name: Copy files from each nginx pod
+  vars:
+    source_path: "/usr/share/nginx/html"
+    destination_dir: "/work/logs"
+  loop: "{{ pod_names.stdout.split() }}"
+  loop_control:
+    loop_var: pod_name
+  kubernetes.core.k8s_cp:
+    namespace: "nginx"
+    pod: "{{ pod_name }}"
+    remote_path: "{{ source_path }}"
+    local_path: "{{ destination_dir }}/{{ pod_name }}_html"
+    state: "from_pod"
+
+
+# - name: Copy Log files
+#   kubernetes.core.k8s_cp:
+#     namespace: nginx
+#     pod: nginx
+#     remote_path: /usr/share/nginx/html
+#     local_path: /work/logs
+#     state: from_pod
