@@ -48,7 +48,7 @@
           - protocol: TCP
             port: 80
             name: port80
-            targetPort: 8080
+            targetPort: 80
   register: lb_service
 
 - name: Wait for external IP to be assigned

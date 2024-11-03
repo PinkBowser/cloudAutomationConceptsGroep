@@ -19,12 +19,3 @@
     remote_path: "{{ source_path }}"
     local_path: "{{ destination_dir }}/{{ pod_name }}_html"
     state: "from_pod"
-
-
-# - name: Copy Log files
-#   kubernetes.core.k8s_cp:
-#     namespace: nginx
-#     pod: nginx
-#     remote_path: /usr/share/nginx/html
-#     local_path: /work/logs
-#     state: from_pod
