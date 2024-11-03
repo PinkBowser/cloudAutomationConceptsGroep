@@ -26,6 +26,9 @@ Resources:
             #!/bin/bash
             yum update -y
             yum upgrade -y
+            yum install cronie -y
+            systemctl enable crond.service
+            systemctl start crond.service
             yum install -y docker
 
             usermod -a -G docker ec2-user
@@ -40,6 +43,12 @@ Resources:
             docker swarm join --token $JOIN_TOKEN ${MANAGERIP}:2377
             
             aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin 093215643118.dkr.ecr.us-east-1.amazonaws.com
+            
+            wget https://raw.githubusercontent.com/Mystos16/CloudShirt/refs/heads/main/worker_node.sh
+            chmod +x worker_node.sh
+            (crontab -l 2>/dev/null; echo "*/5 * * * * worker_node.sh") | crontab -
+            
+            #to do this by hand use ./worker_node.sh
 
           - MANAGERIP:
               Fn::ImportValue: CloudShirtBuildServer:PrivateIp
